@@ -1,6 +1,14 @@
-# Session recordings live as GitHub *release* assets, never as repo files.
-# Committing them would push ~2 GB into git history permanently.
+# Raw session masters (the multi-hundred-MB .wav files) stay out of git —
+# committing those would push ~2 GB into history permanently.
+#
+# The compressed .mp3 recordings are the exception, and they live in audio/.
+# They have to be repo files rather than release assets: GitHub serves release
+# downloads as application/octet-stream with Content-Disposition: attachment,
+# which WebKit refuses to play (MediaError.code 4), so the timecode links were
+# dead on every iPhone at the table. Pages serves the same bytes as audio/mp3
+# with byte ranges honoured, which plays and seeks.
 *.mp3
+!audio/*.mp3
 *.wav
 *.m4a
 *.aac
