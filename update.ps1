@@ -13,7 +13,10 @@ $ErrorActionPreference = "Stop"
 $SiteUrl = "https://dosenft.github.io/dwk-vault/"
 
 # Step 0: work inside the folder this script lives in, no matter where it was run from.
+# We build a full path to index.html and always use it, because relative paths
+# can silently point at the wrong folder.
 Set-Location $PSScriptRoot
+$Target = Join-Path $PSScriptRoot "index.html"
 
 # Step 1: figure out which file to publish.
 # If you didn't name one, grab the most recently saved TheVault*.html from Downloads.
@@ -46,7 +49,7 @@ $robots = [System.Text.Encoding]::ASCII.GetBytes("`n" + '<meta name="robots" con
 # Is the robots line already in there? If so we don't add a second one.
 $text = [System.Text.Encoding]::UTF8.GetString($bytes)
 if ($text -match 'name="robots"') {
-    [System.IO.File]::WriteAllBytes("index.html", $bytes)
+    [System.IO.File]::WriteAllBytes($Target, $bytes)
     Write-Host "   robots line already present - copied as-is."
 }
 else {
@@ -68,13 +71,13 @@ else {
     [Array]::Copy($bytes, 0, $out, 0, $at)
     [Array]::Copy($robots, 0, $out, $at, $robots.Length)
     [Array]::Copy($bytes, $at, $out, $at + $robots.Length, $bytes.Length - $at)
-    [System.IO.File]::WriteAllBytes("index.html", $out)
+    [System.IO.File]::WriteAllBytes($Target, $out)
     Write-Host "   robots line added."
 }
 
 # Step 3: safety check - never let a recording get committed by accident.
 # They are huge and belong in the release, not in the repo.
-$big = Get-ChildItem -File | Where-Object { $_.Length -gt 25MB }
+$big = Get-ChildItem -Path $PSScriptRoot -File | Where-Object { $_.Length -gt 25MB }
 if ($big) {
     Write-Host "Stopping: these files are too big to commit:" -ForegroundColor Red
     $big | ForEach-Object { Write-Host "   $($_.Name)" }
@@ -82,7 +85,7 @@ if ($big) {
 }
 
 # Step 4: save the change and send it to GitHub.
-git add index.html
+git add -- $Target
 
 # If nothing actually changed, stop here instead of making an empty commit.
 git diff --cached --quiet
