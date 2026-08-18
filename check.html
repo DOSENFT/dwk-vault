@@ -1,0 +1,146 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>The Vault — can this device play the recordings?</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--pitch:#12100e;--panel:#1a1714;--rule:#2e2823;--rule2:#3d362f;--parch:#efe6d5;
+ --parch-d:#b3a894;--parch-f:#7d7466;--rust:#b5502a;--rust-l:#e07a45;--moss:#6b8f6b;--gold:#c39a4e;--ink:#0b0a09}
+*{box-sizing:border-box}
+body{margin:0;background:var(--pitch);color:var(--parch);font:300 17px/1.6 'Fraunces',Georgia,serif;
+ background-image:radial-gradient(80% 46% at 50% 0%,rgba(181,80,42,.075),transparent 62%)}
+.wrap{max-width:660px;margin:0 auto;padding:48px 24px 90px}
+.kick{font:500 11px/1 'JetBrains Mono',monospace;letter-spacing:.34em;text-transform:uppercase;color:var(--rust-l);margin-bottom:16px}
+h1{font-size:32px;font-weight:400;line-height:1.14;margin:0 0 12px;letter-spacing:-.015em}
+p.lede{color:var(--parch-d);margin:0 0 26px}
+button.go{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+ border:1px solid var(--rust);background:rgba(181,80,42,.12);color:var(--rust-l);padding:16px 26px;
+ border-radius:2px;cursor:pointer;width:100%}
+button.go:hover:not(:disabled){background:var(--rust);color:var(--ink)}
+button.go:disabled{opacity:.45;cursor:default}
+.rows{margin:30px 0 0;border-top:1px solid var(--rule)}
+.r{display:flex;gap:14px;align-items:flex-start;padding:15px 0;border-bottom:1px solid var(--rule)}
+.dot{flex:0 0 auto;width:9px;height:9px;border-radius:50%;background:var(--rule2);margin-top:8px}
+.r.ok .dot{background:var(--moss)}.r.bad .dot{background:#c0503b}.r.run .dot{background:var(--gold)}
+.rt{flex:1 1 auto;min-width:0}
+.rn{font-size:16.5px}
+.rd{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--parch-f);margin-top:5px;line-height:1.6;word-break:break-word}
+.r.bad .rd{color:var(--gold)}
+.verdict{margin:26px 0 0;padding:16px 18px;border-left:2px solid var(--rust);background:rgba(181,80,42,.07);font-size:16px;line-height:1.55}
+.verdict.good{border-color:var(--moss);background:rgba(107,143,107,.07)}
+.copy{margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+ border:1px solid var(--rule2);background:none;color:var(--parch-d);padding:11px 16px;border-radius:2px;cursor:pointer}
+.copy:hover{border-color:var(--rust);color:var(--rust-l)}
+.foot{margin-top:40px;font:400 11px/1.8 'JetBrains Mono',monospace;color:var(--parch-f)}
+.foot a{color:var(--rust-l)}
+</style></head><body><div class="wrap">
+
+<div class="kick">The Vault</div>
+<h1>Can this device play the recordings?</h1>
+<p class="lede">Six checks, about twenty seconds. Nothing is installed and nothing is sent anywhere —
+it all runs on this page. At the end, hit <b>Copy result</b> and paste it to Marcus.</p>
+
+<button class="go" id="go">Run the check</button>
+<div class="rows" id="rows"></div>
+<div id="verdict"></div>
+<button class="copy" id="copy" style="display:none">Copy result</button>
+
+<div class="foot">The vault itself is at <a href="https://dosenft.github.io/dwk-vault/">dosenft.github.io/dwk-vault</a></div>
+
+</div>
+<audio id="au" preload="metadata" playsinline></audio>
+<script>
+const URL_MP3='https://github.com/DOSENFT/dwk-vault/releases/download/audio/s12-ponzis-oath.mp3';
+const $=id=>document.getElementById(id);
+const au=$('au'); const LOG=[];
+function row(name){
+ const d=document.createElement('div'); d.className='r run';
+ d.innerHTML='<span class="dot"></span><div class="rt"><div class="rn"></div><div class="rd">checking…</div></div>';
+ d.querySelector('.rn').textContent=name; $('rows').appendChild(d); return d;
+}
+function done(d,ok,detail){ d.className='r '+(ok?'ok':'bad'); d.querySelector('.rd').textContent=detail;
+ LOG.push((ok?'PASS  ':'FAIL  ')+d.querySelector('.rn').textContent+' — '+detail); return ok; }
+const wait=(el,ev,ms)=>new Promise(res=>{
+ let t=setTimeout(()=>res(null),ms);
+ const h=()=>{clearTimeout(t); el.removeEventListener(ev,h); res(ev);};
+ el.addEventListener(ev,h);
+});
+
+$('go').onclick=async()=>{
+ $('go').disabled=true; $('go').textContent='Checking…';
+ $('rows').innerHTML=''; $('verdict').innerHTML=''; LOG.length=0;
+ let fatal=null;
+
+ const c=navigator.connection||{};
+ LOG.push('DEVICE '+navigator.userAgent);
+ LOG.push('NET    '+(c.effectiveType||'unknown')+(c.saveData?' · data saver ON':''));
+
+ let d=row('This page reached you');
+ done(d,true,location.href);
+
+ d=row('Data saver is off');
+ done(d,!c.saveData,c.saveData?'Data saver is ON — Chrome may refuse to stream large audio. Turn it off in Settings.':'off'+(c.effectiveType?' · connection reported as '+c.effectiveType:''));
+
+ d=row('The recording is reachable');
+ const t0=performance.now();
+ au.src=URL_MP3; au.load();
+ const meta=await Promise.race([wait(au,'loadedmetadata',25000), wait(au,'error',25000)]);
+ if(meta!=='loadedmetadata'){
+  const e=au.error;
+  fatal=done(d,false, e ? ({1:'the browser cancelled it',2:'the network blocked or dropped it',
+    3:'the file would not decode',4:'this browser refused the file'}[e.code]||('error code '+e.code))
+    : 'gave up after 25 seconds — the network is blocking github.com or is very slow')&&null;
+  fatal=true;
+ } else {
+  done(d,true,Math.round(au.duration)+' seconds long, found in '+Math.round(performance.now()-t0)+'ms');
+ }
+
+ d=row('Jumping to a timecode works');
+ if(fatal){ done(d,false,'not tested — the recording never loaded'); }
+ else {
+  au.currentTime=600;
+  const s=await wait(au,'seeked',15000);
+  done(d, s==='seeked' && Math.abs(au.currentTime-600)<3,
+    s==='seeked'?('landed at '+Math.round(au.currentTime)+'s'):'the server would not serve part of the file');
+ }
+
+ d=row('Sound actually starts');
+ if(fatal){ done(d,false,'not tested — the recording never loaded'); }
+ else {
+  try{
+   await au.play();
+   const p=await wait(au,'timeupdate',9000);
+   done(d, p==='timeupdate' && au.currentTime>0, p?('playing at '+Math.round(au.currentTime)+'s'):'started but produced no sound');
+   au.pause();
+  }catch(err){
+   done(d,false,(err&&err.name)==='NotAllowedError'
+     ? 'the browser blocked it — this page needs a tap first (you tapped, so this is unusual)'
+     : 'refused: '+(err&&err.message||err));
+  }
+ }
+
+ d=row('The vault page itself loads');
+ try{
+  const r=await fetch('index.html',{cache:'no-store'});
+  const txt=await r.text();
+  const m=txt.match(/BUILD='([^']+)'/);
+  done(d,r.ok,r.ok?('yes — version '+(m?m[1]:'unknown')):'HTTP '+r.status);
+ }catch(e){ done(d,false,'could not fetch it: '+e); }
+
+ const bad=[...document.querySelectorAll('.r.bad')].length;
+ $('verdict').className='verdict'+(bad?'':' good');
+ $('verdict').innerHTML = bad
+  ? '<b>Something is in the way.</b> The lines in gold above say what. Most often it is a work or school network blocking github.com, or Data Saver being switched on. Hit <b>Copy result</b> and send it to Marcus.'
+  : '<b>Everything works on this device.</b> The recordings will play in the vault. If they still do not, it is the vault page and not your device — hit <b>Copy result</b> and send it to Marcus.';
+ $('copy').style.display='inline-block';
+ $('go').disabled=false; $('go').textContent='Run it again';
+};
+
+$('copy').onclick=async()=>{
+ const txt='The Vault — playback check\n'+new Date().toISOString()+'\n\n'+LOG.join('\n');
+ try{ await navigator.clipboard.writeText(txt); $('copy').textContent='Copied — paste it to Marcus'; }
+ catch(e){ const t=document.createElement('textarea'); t.value=txt;
+  t.style.cssText='width:100%;height:220px;margin-top:14px;background:#1a1714;color:#efe6d5;border:1px solid #3d362f';
+  $('copy').after(t); t.select(); $('copy').textContent='Copy the text below'; }
+};
+</script></body></html>
