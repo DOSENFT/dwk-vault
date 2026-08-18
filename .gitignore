@@ -1,0 +1,16 @@
+# Session recordings live as GitHub *release* assets, never as repo files.
+# Committing them would push ~2 GB into git history permanently.
+*.mp3
+*.wav
+*.m4a
+*.aac
+*.flac
+*.ogg
+*.mp4
+*.mov
+*.mkv
+
+# Local scratch
+*.tmp
+.DS_Store
+Thumbs.db

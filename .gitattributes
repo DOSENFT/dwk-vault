@@ -1,0 +1,4 @@
+# index.html is generated output. Store it byte-for-byte, with no
+# automatic line-ending conversion, so what Marcus saves is exactly
+# what the site serves.
+*.html -text
