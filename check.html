@@ -37,8 +37,7 @@ button.go:disabled{opacity:.45;cursor:default}
 
 <div class="kick">The Vault</div>
 <h1>Can this device play the recordings?</h1>
-<p class="lede">Six checks, about twenty seconds. Nothing is installed and nothing is sent anywhere —
-it all runs on this page. At the end, hit <b>Copy result</b> and paste it to Marcus.</p>
+<p class="lede">Eight checks, about forty seconds. It plays the same recording from two different hosts to find out which one your device will accept. Nothing is installed and nothing is sent anywhere — it all runs on this page. At the end, hit <b>Copy result</b> and paste it to Marcus.</p>
 
 <button class="go" id="go">Run the check</button>
 <div class="rows" id="rows"></div>
@@ -48,11 +47,19 @@ it all runs on this page. At the end, hit <b>Copy result</b> and paste it to Mar
 <div class="foot">The vault itself is at <a href="https://dosenft.github.io/dwk-vault/">dosenft.github.io/dwk-vault</a></div>
 
 </div>
-<audio id="au" preload="metadata" playsinline></audio>
 <script>
-const URL_MP3='https://github.com/DOSENFT/dwk-vault/releases/download/audio/s12-ponzis-oath.mp3';
+/* Two copies of the same recording. Same bytes, different label on the tin.
+   iPhones refuse the one GitHub serves because GitHub calls it
+   "application/octet-stream" and attaches a download header; Safari will not
+   treat that as music no matter what is inside it. This page proves which
+   half of that sentence is true on YOUR device. */
+const A={name:'The recording, as it is hosted today',
+  url:'https://github.com/DOSENFT/dwk-vault/releases/download/audio/s12-ponzis-oath.mp3'};
+const B={name:'The same recording, labelled properly',
+  url:'https://olsoszyirfbqdinczlvc.supabase.co/storage/v1/object/public/audio/s12-ponzis-oath.mp3'};
+
 const $=id=>document.getElementById(id);
-const au=$('au'); const LOG=[];
+const LOG=[]; let RESULT={};
 function row(name){
  const d=document.createElement('div'); d.className='r run';
  d.innerHTML='<span class="dot"></span><div class="rt"><div class="rn"></div><div class="rd">checking…</div></div>';
@@ -61,77 +68,73 @@ function row(name){
 function done(d,ok,detail){ d.className='r '+(ok?'ok':'bad'); d.querySelector('.rd').textContent=detail;
  LOG.push((ok?'PASS  ':'FAIL  ')+d.querySelector('.rn').textContent+' — '+detail); return ok; }
 const wait=(el,ev,ms)=>new Promise(res=>{
- let t=setTimeout(()=>res(null),ms);
+ const t=setTimeout(()=>res(null),ms);
  const h=()=>{clearTimeout(t); el.removeEventListener(ev,h); res(ev);};
  el.addEventListener(ev,h);
 });
+const why=e=>e?({1:'the browser cancelled it',2:'the network blocked or dropped it',
+  3:'the file would not decode',4:'this browser refused the file'}[e.code]||('error code '+e.code))
+  :'gave up waiting — the network is blocking it or is very slow';
+
+async function tryHost(h,tag){
+ const au=document.createElement('audio'); au.preload='metadata'; au.playsInline=true;
+ document.body.appendChild(au);
+ let d=row(h.name);
+ const t0=performance.now();
+ au.src=h.url; au.load();
+ const got=await Promise.race([wait(au,'loadedmetadata',25000),wait(au,'error',25000)]);
+ if(got!=='loadedmetadata'){ done(d,false,why(au.error)); au.remove(); return {load:false}; }
+ done(d,true,Math.round(au.duration)+' seconds long, found in '+Math.round(performance.now()-t0)+'ms');
+
+ d=row(tag+' — jumping to a timecode');
+ au.currentTime=600;
+ const s=await wait(au,'seeked',15000);
+ const seek=s==='seeked'&&Math.abs(au.currentTime-600)<4;
+ done(d,seek,seek?('landed at '+Math.round(au.currentTime)+'s'):'the host would not serve part of the file');
+
+ d=row(tag+' — sound actually starts');
+ let sound=false;
+ try{ await au.play();
+  const p=await wait(au,'timeupdate',9000);
+  sound=p==='timeupdate'&&au.currentTime>0;
+  done(d,sound,sound?('playing at '+Math.round(au.currentTime)+'s'):'started but produced no sound');
+  au.pause();
+ }catch(err){ done(d,false,(err&&err.name)==='NotAllowedError'
+   ? 'the browser wanted another tap first' : 'refused: '+(err&&err.message||err)); }
+ au.remove();
+ return {load:true,seek,sound};
+}
 
 $('go').onclick=async()=>{
  $('go').disabled=true; $('go').textContent='Checking…';
- $('rows').innerHTML=''; $('verdict').innerHTML=''; LOG.length=0;
- let fatal=null;
-
+ $('rows').innerHTML=''; $('verdict').innerHTML=''; LOG.length=0; $('copy').style.display='none';
  const c=navigator.connection||{};
  LOG.push('DEVICE '+navigator.userAgent);
- LOG.push('NET    '+(c.effectiveType||'unknown')+(c.saveData?' · data saver ON':''));
+ LOG.push('NET    '+(c.effectiveType||'unknown')+(c.saveData?' · DATA SAVER ON':''));
 
- let d=row('This page reached you');
- done(d,true,location.href);
-
+ let d=row('This page reached you'); done(d,true,location.href);
  d=row('Data saver is off');
- done(d,!c.saveData,c.saveData?'Data saver is ON — Chrome may refuse to stream large audio. Turn it off in Settings.':'off'+(c.effectiveType?' · connection reported as '+c.effectiveType:''));
+ done(d,!c.saveData,c.saveData?'Data saver is ON — turn it off and run this again':'off');
 
- d=row('The recording is reachable');
- const t0=performance.now();
- au.src=URL_MP3; au.load();
- const meta=await Promise.race([wait(au,'loadedmetadata',25000), wait(au,'error',25000)]);
- if(meta!=='loadedmetadata'){
-  const e=au.error;
-  fatal=done(d,false, e ? ({1:'the browser cancelled it',2:'the network blocked or dropped it',
-    3:'the file would not decode',4:'this browser refused the file'}[e.code]||('error code '+e.code))
-    : 'gave up after 25 seconds — the network is blocking github.com or is very slow')&&null;
-  fatal=true;
- } else {
-  done(d,true,Math.round(au.duration)+' seconds long, found in '+Math.round(performance.now()-t0)+'ms');
- }
-
- d=row('Jumping to a timecode works');
- if(fatal){ done(d,false,'not tested — the recording never loaded'); }
- else {
-  au.currentTime=600;
-  const s=await wait(au,'seeked',15000);
-  done(d, s==='seeked' && Math.abs(au.currentTime-600)<3,
-    s==='seeked'?('landed at '+Math.round(au.currentTime)+'s'):'the server would not serve part of the file');
- }
-
- d=row('Sound actually starts');
- if(fatal){ done(d,false,'not tested — the recording never loaded'); }
- else {
-  try{
-   await au.play();
-   const p=await wait(au,'timeupdate',9000);
-   done(d, p==='timeupdate' && au.currentTime>0, p?('playing at '+Math.round(au.currentTime)+'s'):'started but produced no sound');
-   au.pause();
-  }catch(err){
-   done(d,false,(err&&err.name)==='NotAllowedError'
-     ? 'the browser blocked it — this page needs a tap first (you tapped, so this is unusual)'
-     : 'refused: '+(err&&err.message||err));
-  }
- }
+ const ra=await tryHost(A,'Today');
+ const rb=await tryHost(B,'Labelled');
 
  d=row('The vault page itself loads');
- try{
-  const r=await fetch('index.html',{cache:'no-store'});
-  const txt=await r.text();
+ try{ const r=await fetch('index.html',{cache:'no-store'}); const txt=await r.text();
   const m=txt.match(/BUILD='([^']+)'/);
   done(d,r.ok,r.ok?('yes — version '+(m?m[1]:'unknown')):'HTTP '+r.status);
  }catch(e){ done(d,false,'could not fetch it: '+e); }
 
- const bad=[...document.querySelectorAll('.r.bad')].length;
- $('verdict').className='verdict'+(bad?'':' good');
- $('verdict').innerHTML = bad
-  ? '<b>Something is in the way.</b> The lines in gold above say what. Most often it is a work or school network blocking github.com, or Data Saver being switched on. Hit <b>Copy result</b> and send it to Marcus.'
-  : '<b>Everything works on this device.</b> The recordings will play in the vault. If they still do not, it is the vault page and not your device — hit <b>Copy result</b> and send it to Marcus.';
+ const v=$('verdict');
+ if(ra.sound&&rb.sound){ v.className='verdict good';
+  v.innerHTML='<b>Both work on this device.</b> Nothing needs moving for you — if the recordings still will not play inside the vault, the problem is the vault page and not your phone.'; }
+ else if(!ra.load&&rb.sound){ v.className='verdict good';
+  v.innerHTML='<b>Confirmed — and there is a fix.</b> This device refuses the recording only because of how GitHub labels it. The identical file, labelled properly, plays here. Moving the recordings to the labelled host solves it.'; }
+ else if(!ra.load&&!rb.load){ v.className='verdict';
+  v.innerHTML='<b>Neither one loaded.</b> That points at the network rather than the label — a work, school or guest wifi blocking large downloads, or a very slow connection. Try again on a different network.'; }
+ else { v.className='verdict';
+  v.innerHTML='<b>Mixed result.</b> Hit <b>Copy result</b> and send it over — the detail matters here.'; }
+ LOG.push('VERDICT '+v.textContent.trim());
  $('copy').style.display='inline-block';
  $('go').disabled=false; $('go').textContent='Run it again';
 };
@@ -140,7 +143,7 @@ $('copy').onclick=async()=>{
  const txt='The Vault — playback check\n'+new Date().toISOString()+'\n\n'+LOG.join('\n');
  try{ await navigator.clipboard.writeText(txt); $('copy').textContent='Copied — paste it to Marcus'; }
  catch(e){ const t=document.createElement('textarea'); t.value=txt;
-  t.style.cssText='width:100%;height:220px;margin-top:14px;background:#1a1714;color:#efe6d5;border:1px solid #3d362f';
+  t.style.cssText='width:100%;height:240px;margin-top:14px;background:#1a1714;color:#efe6d5;border:1px solid #3d362f';
   $('copy').after(t); t.select(); $('copy').textContent='Copy the text below'; }
 };
 </script></body></html>
