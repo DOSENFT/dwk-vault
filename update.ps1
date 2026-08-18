@@ -83,7 +83,10 @@ if ($big) {
 
 # Step 4: save the change and send it to GitHub.
 git add index.html
-if (git diff --cached --quiet; $LASTEXITCODE -eq 0) {
+
+# If nothing actually changed, stop here instead of making an empty commit.
+git diff --cached --quiet
+if ($LASTEXITCODE -eq 0) {
     Write-Host "No changes - the site already matches this file. Nothing to publish." -ForegroundColor Yellow
     exit 0
 }
