@@ -37,7 +37,7 @@ button.go:disabled{opacity:.45;cursor:default}
 
 <div class="kick">The Vault</div>
 <h1>Can this device play the recordings?</h1>
-<p class="lede">Eight checks, about forty seconds. It plays the same recording from two different hosts to find out which one your device will accept. Nothing is installed and nothing is sent anywhere — it all runs on this page. At the end, hit <b>Copy result</b> and paste it to Marcus.</p>
+<p class="lede">Eleven checks, about a minute. It plays one and the same recording from three different hosts, to find out which of them your device will accept. Nothing is installed and nothing is sent anywhere — it all runs on this page. At the end, hit <b>Copy result</b> and paste it to Marcus.</p>
 
 <button class="go" id="go">Run the check</button>
 <div class="rows" id="rows"></div>
@@ -55,7 +55,9 @@ button.go:disabled{opacity:.45;cursor:default}
    half of that sentence is true on YOUR device. */
 const A={name:'The recording, as it is hosted today',
   url:'https://github.com/DOSENFT/dwk-vault/releases/download/audio/s12-ponzis-oath.mp3'};
-const B={name:'The same recording, labelled properly',
+const B={name:'The same recording, from the vault\u2019s own site',
+  url:'sample.mp3'};
+const C={name:'The same recording, from a labelled store',
   url:'https://olsoszyirfbqdinczlvc.supabase.co/storage/v1/object/public/audio/s12-ponzis-oath.mp3'};
 
 const $=id=>document.getElementById(id);
@@ -117,7 +119,8 @@ $('go').onclick=async()=>{
  done(d,!c.saveData,c.saveData?'Data saver is ON — turn it off and run this again':'off');
 
  const ra=await tryHost(A,'Today');
- const rb=await tryHost(B,'Labelled');
+ const rb=await tryHost(B,'This site');
+ const rc=await tryHost(C,'Store');
 
  d=row('The vault page itself loads');
  try{ const r=await fetch('index.html',{cache:'no-store'}); const txt=await r.text();
@@ -125,13 +128,13 @@ $('go').onclick=async()=>{
   done(d,r.ok,r.ok?('yes — version '+(m?m[1]:'unknown')):'HTTP '+r.status);
  }catch(e){ done(d,false,'could not fetch it: '+e); }
 
- const v=$('verdict');
- if(ra.sound&&rb.sound){ v.className='verdict good';
-  v.innerHTML='<b>Both work on this device.</b> Nothing needs moving for you — if the recordings still will not play inside the vault, the problem is the vault page and not your phone.'; }
- else if(!ra.load&&rb.sound){ v.className='verdict good';
-  v.innerHTML='<b>Confirmed — and there is a fix.</b> This device refuses the recording only because of how GitHub labels it. The identical file, labelled properly, plays here. Moving the recordings to the labelled host solves it.'; }
- else if(!ra.load&&!rb.load){ v.className='verdict';
-  v.innerHTML='<b>Neither one loaded.</b> That points at the network rather than the label — a work, school or guest wifi blocking large downloads, or a very slow connection. Try again on a different network.'; }
+ const v=$('verdict'); const works=[rb.sound&&'this site',rc.sound&&'the labelled store'].filter(Boolean);
+ if(ra.sound&&rb.sound&&rc.sound){ v.className='verdict good';
+  v.innerHTML='<b>All three work on this device.</b> Nothing needs moving for you — if the recordings still will not play inside the vault, the problem is the vault page and not your phone.'; }
+ else if(!ra.load&&works.length){ v.className='verdict good';
+  v.innerHTML='<b>Confirmed, and there is a fix.</b> This device refuses the recording only because of how GitHub labels it. The identical file plays fine from '+works.join(' and ')+'. Moving the recordings there solves it for good.'; }
+ else if(!ra.load&&!rb.load&&!rc.load){ v.className='verdict';
+  v.innerHTML='<b>Nothing loaded at all.</b> That points at the network rather than the label — a work, school or guest wifi blocking large files, or a very slow connection. Try again on a different network.'; }
  else { v.className='verdict';
   v.innerHTML='<b>Mixed result.</b> Hit <b>Copy result</b> and send it over — the detail matters here.'; }
  LOG.push('VERDICT '+v.textContent.trim());
