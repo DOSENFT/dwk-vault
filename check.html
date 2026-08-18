@@ -37,7 +37,7 @@ button.go:disabled{opacity:.45;cursor:default}
 
 <div class="kick">The Vault</div>
 <h1>Can this device play the recordings?</h1>
-<p class="lede">Eleven checks, about a minute. It plays one and the same recording from three different hosts, to find out which of them your device will accept. Nothing is installed and nothing is sent anywhere — it all runs on this page. At the end, hit <b>Copy result</b> and paste it to Marcus.</p>
+<p class="lede">Eleven checks, about a minute. It loads two real recordings the way the vault does — reading their length, jumping into the middle, and starting sound. Nothing is installed and nothing is sent anywhere — it all runs on this page. At the end, hit <b>Copy result</b> and paste it to Marcus.</p>
 
 <button class="go" id="go">Run the check</button>
 <div class="rows" id="rows"></div>
@@ -53,12 +53,12 @@ button.go:disabled{opacity:.45;cursor:default}
    "application/octet-stream" and attaches a download header; Safari will not
    treat that as music no matter what is inside it. This page proves which
    half of that sentence is true on YOUR device. */
-const A={name:'The recording, as it is hosted today',
+const A={name:'The old address (kept as a control)',
   url:'https://github.com/DOSENFT/dwk-vault/releases/download/audio/s12-ponzis-oath.mp3'};
-const B={name:'The same recording, from the vault\u2019s own site',
-  url:'sample.mp3'};
-const C={name:'The same recording, from a labelled store',
-  url:'https://olsoszyirfbqdinczlvc.supabase.co/storage/v1/object/public/audio/s12-ponzis-oath.mp3'};
+const B={name:'A real recording, where they now live',
+  url:'audio/s12-ponzis-oath.mp3'};
+const C={name:'The longest recording you have',
+  url:'audio/s11-festival-planning.mp3'};
 
 const $=id=>document.getElementById(id);
 const LOG=[]; let RESULT={};
@@ -78,14 +78,32 @@ const why=e=>e?({1:'the browser cancelled it',2:'the network blocked or dropped 
   3:'the file would not decode',4:'this browser refused the file'}[e.code]||('error code '+e.code))
   :'gave up waiting — the network is blocking it or is very slow';
 
+const ELS={};
+function makeEls(){
+ [A,B,C].forEach(h=>{
+  if(ELS[h.url]) return;
+  const au=document.createElement('audio');
+  au.preload='metadata'; au.playsInline=true; au.src=h.url;
+  document.body.appendChild(au); ELS[h.url]=au;
+ });
+}
+/* Must run synchronously inside the tap. Starting and immediately stopping an
+   element is what tells iOS "a human asked for this", and the permission then
+   sticks to that element. Without it, a slow first host eats the tap and the
+   later ones report a browser rule as if the recording had failed. */
+function unlockAll(){
+ Object.values(ELS).forEach(au=>{
+  try{ const p=au.play(); if(p&&p.catch) p.catch(()=>{}); au.pause(); au.currentTime=0; }catch(e){}
+ });
+}
 async function tryHost(h,tag){
- const au=document.createElement('audio'); au.preload='metadata'; au.playsInline=true;
- document.body.appendChild(au);
+ const au=ELS[h.url];
  let d=row(h.name);
  const t0=performance.now();
- au.src=h.url; au.load();
- const got=await Promise.race([wait(au,'loadedmetadata',25000),wait(au,'error',25000)]);
- if(got!=='loadedmetadata'){ done(d,false,why(au.error)); au.remove(); return {load:false}; }
+ if(au.readyState<1) au.load();
+ const got=au.readyState>=1 ? 'loadedmetadata'
+   : await Promise.race([wait(au,'loadedmetadata',20000),wait(au,'error',20000)]);
+ if(got!=='loadedmetadata'){ done(d,false,why(au.error)); return {load:false}; }
  done(d,true,Math.round(au.duration)+' seconds long, found in '+Math.round(performance.now()-t0)+'ms');
 
  d=row(tag+' — jumping to a timecode');
@@ -95,21 +113,23 @@ async function tryHost(h,tag){
  done(d,seek,seek?('landed at '+Math.round(au.currentTime)+'s'):'the host would not serve part of the file');
 
  d=row(tag+' — sound actually starts');
- let sound=false;
+ let sound=false, blocked=false;
  try{ await au.play();
   const p=await wait(au,'timeupdate',9000);
   sound=p==='timeupdate'&&au.currentTime>0;
   done(d,sound,sound?('playing at '+Math.round(au.currentTime)+'s'):'started but produced no sound');
   au.pause();
- }catch(err){ done(d,false,(err&&err.name)==='NotAllowedError'
-   ? 'the browser wanted another tap first' : 'refused: '+(err&&err.message||err)); }
- au.remove();
- return {load:true,seek,sound};
+ }catch(err){ blocked=(err&&err.name)==='NotAllowedError';
+  done(d,false,blocked
+   ? 'the phone wanted a fresh tap — a browser rule, not the recording'
+   : 'refused: '+(err&&err.message||err)); }
+ return {load:true,seek,sound,blocked};
 }
 
 $('go').onclick=async()=>{
  $('go').disabled=true; $('go').textContent='Checking…';
  $('rows').innerHTML=''; $('verdict').innerHTML=''; LOG.length=0; $('copy').style.display='none';
+ makeEls(); unlockAll();
  const c=navigator.connection||{};
  LOG.push('DEVICE '+navigator.userAgent);
  LOG.push('NET    '+(c.effectiveType||'unknown')+(c.saveData?' · DATA SAVER ON':''));
@@ -119,8 +139,8 @@ $('go').onclick=async()=>{
  done(d,!c.saveData,c.saveData?'Data saver is ON — turn it off and run this again':'off');
 
  const ra=await tryHost(A,'Today');
- const rb=await tryHost(B,'This site');
- const rc=await tryHost(C,'Store');
+ const rb=await tryHost(B,'Session 14');
+ const rc=await tryHost(C,'Session 13');
 
  d=row('The vault page itself loads');
  try{ const r=await fetch('index.html',{cache:'no-store'}); const txt=await r.text();
@@ -128,13 +148,18 @@ $('go').onclick=async()=>{
   done(d,r.ok,r.ok?('yes — version '+(m?m[1]:'unknown')):'HTTP '+r.status);
  }catch(e){ done(d,false,'could not fetch it: '+e); }
 
- const v=$('verdict'); const works=[rb.sound&&'this site',rc.sound&&'the labelled store'].filter(Boolean);
- if(ra.sound&&rb.sound&&rc.sound){ v.className='verdict good';
-  v.innerHTML='<b>All three work on this device.</b> Nothing needs moving for you — if the recordings still will not play inside the vault, the problem is the vault page and not your phone.'; }
- else if(!ra.load&&works.length){ v.className='verdict good';
-  v.innerHTML='<b>Confirmed, and there is a fix.</b> This device refuses the recording only because of how GitHub labels it. The identical file plays fine from '+works.join(' and ')+'. Moving the recordings there solves it for good.'; }
- else if(!ra.load&&!rb.load&&!rc.load){ v.className='verdict';
-  v.innerHTML='<b>Nothing loaded at all.</b> That points at the network rather than the label — a work, school or guest wifi blocking large files, or a very slow connection. Try again on a different network.'; }
+ /* A host this browser ACCEPTED is one whose length it read and whose middle
+    it could jump to. Whether the phone then permitted sound without a fresh
+    tap is a separate rule, and not the recording's fault. */
+ const took=r=>r.load&&r.seek;
+ const v=$('verdict');
+ const blocked=[ra,rb,rc].some(r=>r.blocked);
+ if(took(rb)&&took(rc)){ v.className='verdict good';
+  v.innerHTML='<b>This device can play the recordings.</b> It read the full length of both and jumped into the middle of a four-hour one. You are good to go.'
+   +(blocked?'<br><br>Any &ldquo;wanted a fresh tap&rdquo; line is iOS\u2019s rule about starting sound on its own. It does not apply in the vault, where your finger is on the play button.':'')
+   +(ra.load?'':'<br><br>The first line failing is expected — that is the old address, kept only as a control.'); }
+ else if(!rb.load&&!rc.load){ v.className='verdict';
+  v.innerHTML='<b>The recordings would not load.</b> That points at the network — a work, school or guest wifi blocking large files, or a very slow connection. Try again on a different one, then send this over.'; }
  else { v.className='verdict';
   v.innerHTML='<b>Mixed result.</b> Hit <b>Copy result</b> and send it over — the detail matters here.'; }
  LOG.push('VERDICT '+v.textContent.trim());
