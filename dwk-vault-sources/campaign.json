@@ -1,0 +1,77 @@
+{
+ "_note": "Campaign-level truth, authored by Marcus — not derived from Notta. This overrides anything the session notes claim about the party.",
+ "title": "Driftwood Kin",
+ "roster": [
+  {
+   "name": "Nyx",
+   "realName": "Khaonn Lochai",
+   "cls": "Paladin of the Hearth",
+   "status": "active"
+  },
+  {
+   "name": "Rune Willow",
+   "cls": "Bladesinger Wizard",
+   "status": "active"
+  },
+  {
+   "name": "Talon",
+   "realName": "Tanner",
+   "cls": "Bard",
+   "status": "active"
+  },
+  {
+   "name": "Ponzi",
+   "cls": "Rogue",
+   "status": "active"
+  },
+  {
+   "name": "Scar",
+   "cls": "Barbarian",
+   "status": "gone",
+   "note": "Dead. Not really dead."
+  },
+  {
+   "name": "Ketza",
+   "cls": "Ranger",
+   "status": "gone",
+   "note": "Went to the Fey. No longer with the party."
+  },
+  {
+   "name": "???",
+   "cls": "Unknown",
+   "status": "incoming",
+   "note": "Two more joining soon."
+  },
+  {
+   "name": "???",
+   "cls": "Unknown",
+   "status": "incoming",
+   "note": "Two more joining soon."
+  }
+ ],
+ "nations": [
+  "Tostra",
+  "Cauberos",
+  "Callestus",
+  "The Northern Alliance",
+  "Vaan"
+ ],
+ "kindLabels": {
+  "pc": "The Party",
+  "npc": "People",
+  "creature": "Creatures",
+  "faction": "Factions",
+  "nation": "Nations",
+  "asterum": "Asterums",
+  "deity": "Gods",
+  "place": "Places",
+  "item": "Items & Artifacts",
+  "other": "Everything else"
+ },
+ "kindHelp": {
+  "asterum": "An Asterum is an angelic patron a character serves. There are many in the world. Not a faction, not a god.",
+  "nation": "One of the five sovereign nations."
+ },
+ "curator": "",
+ "music": []
+}

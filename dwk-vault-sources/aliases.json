@@ -1,0 +1,224 @@
+{
+ "_note": "Canonical name -> spellings/aliases found across sessions. Applied at build time so the Codex merges one subject into one page instead of scattering it. Only entries confirmed as the same subject by reading the source notes are listed here — never merge on a hunch. `reveal` marks aliases that are story facts (a true name learned in play), which the vault surfaces rather than hides.",
+ "Rune Willow": {
+  "aliases": [
+   "Runewillow",
+   "Runewillo",
+   "Rune Willow",
+   "Broomwillow",
+   "Runewill"
+  ]
+ },
+ "Talon": {
+  "aliases": [
+   "Talon",
+   "Tanner"
+  ],
+  "reveal": "Talon's real name is Tanner."
+ },
+ "Ponzi": {
+  "aliases": [
+   "Ponzi",
+   "Ponsey",
+   "Asher"
+  ],
+  "reveal": "Ponzi's real name is Asher — named by the Solemn Keeper of the Prisons."
+ },
+ "Nyx": {
+  "aliases": [
+   "Nyx",
+   "Nix",
+   "Nexi",
+   "Nexus",
+   "Kayon",
+   "Khaonn",
+   "Khaonn Lochai"
+  ],
+  "reveal": "Nyx is a Changeling. His true name is Khaonn Lochai."
+ },
+ "Vesh": {
+  "aliases": [
+   "Vesh",
+   "Vetch"
+  ]
+ },
+ "Caramel": {
+  "aliases": [
+   "Caramel",
+   "Caremall",
+   "Caramall",
+   "Caramol",
+   "Care Mall"
+  ]
+ },
+ "Olama": {
+  "aliases": [
+   "Olama",
+   "Alama"
+  ]
+ },
+ "Algovan": {
+  "aliases": [
+   "Algovan",
+   "Alvgand",
+   "Alvgard"
+  ]
+ },
+ "Sylvari Kallis": {
+  "aliases": [
+   "Sylvari Kallis",
+   "Silvari Collis"
+  ]
+ },
+ "The Solemn Keeper of the Prisons": {
+  "aliases": [
+   "The Solemn Keeper of the Prisons",
+   "Solemn Keeper",
+   "The Solemn Keeper"
+  ]
+ },
+ "Enchantment Breaker Ring": {
+  "aliases": [
+   "Enchantment Breaker Ring",
+   "Ring with Chains",
+   "ring with chains"
+  ]
+ },
+ "Ood the Crafter": {
+  "aliases": [
+   "Ood the Crafter",
+   "Ood",
+   "Uud"
+  ]
+ },
+ "Omarian": {
+  "aliases": [
+   "Omarian",
+   "Umarian",
+   "O'Marian"
+  ]
+ },
+ "Bayward the Wanderer": {
+  "aliases": [
+   "Bayward the Wanderer",
+   "Bayward",
+   "Baywood"
+  ]
+ },
+ "Hanon the Hail": {
+  "aliases": [
+   "Hanon the Hail",
+   "Hanon"
+  ]
+ },
+ "Dakar the Farsighted": {
+  "aliases": [
+   "Dakar the Farsighted",
+   "Dakar"
+  ]
+ },
+ "Callestus": {
+  "aliases": [
+   "Callestus",
+   "Kalestis",
+   "Kalestas",
+   "Calestus",
+   "Callestian"
+  ]
+ },
+ "Aileena": {
+  "aliases": [
+   "Aileena",
+   "Ailena"
+  ]
+ },
+ "Ann Baton": {
+  "aliases": [
+   "Ann Baton",
+   "Onbaton"
+  ]
+ },
+ "Driftwood Kin": {
+  "aliases": [
+   "Driftwood Kin",
+   "Driftwoods Kin",
+   "DWK",
+   "The Driftwood Kin"
+  ]
+ },
+ "The Northern Alliance": {
+  "aliases": [
+   "The Northern Alliance",
+   "Northern Alliance"
+  ]
+ },
+ "The Arcanists": {
+  "aliases": [
+   "The Arcanists",
+   "Arcanists",
+   "Arcanist Society"
+  ]
+ },
+ "Vattenheim": {
+  "aliases": [
+   "Vattenheim",
+   "Vatenheim"
+  ]
+ },
+ "The Night Hag": {
+  "aliases": [
+   "The Night Hag",
+   "Night Hag"
+  ]
+ },
+ "Cauberos": {
+  "aliases": [
+   "Cauberos",
+   "Kauberos",
+   "Caberos",
+   "Cauberin"
+  ]
+ },
+ "Ketza": {
+  "aliases": [
+   "Ketza",
+   "Ketsa",
+   "Ketza the Ranger"
+  ]
+ },
+ "Scar": {
+  "aliases": [
+   "Scar"
+  ]
+ },
+ "Asus the Shepherd": {
+  "aliases": [
+   "Asus the Shepherd",
+   "Asus"
+  ]
+ },
+ "Uros": {
+  "aliases": [
+   "Uros",
+   "Urus"
+  ]
+ },
+ "Tostra": {
+  "aliases": [
+   "Tostra",
+   "Tostraen",
+   "Tostranian"
+  ]
+ },
+ "Vaan": {
+  "aliases": [
+   "Vaan"
+  ]
+ },
+ "_hidden": {
+  "aliases": [],
+  "drop": [
+   "Hello"
+  ]
+ }
+}

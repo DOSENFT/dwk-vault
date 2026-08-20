@@ -1,0 +1,12 @@
+{
+  "_note": "Canonical kind for named subjects, overriding whatever a session note guessed. Applied at build time.",
+  "Asus the Shepherd":"asterum",
+  "Uros":"asterum",
+  "The Asterium":"asterum",
+  "Tostra":"nation",
+  "Cauberos":"nation",
+  "Callestus":"nation",
+  "The Northern Alliance":"nation",
+  "Vaan":"nation",
+  "Nyx":"pc","Rune Willow":"pc","Talon":"pc","Ponzi":"pc","Scar":"pc","Ketza":"pc"
+}
