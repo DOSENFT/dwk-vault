@@ -529,6 +529,49 @@ body.haspc #e-name{text-shadow:0 2px 30px rgba(18,16,14,.9)}
  color:var(--parch-f);padding:10px 0 4px;border-top:1px solid var(--rule)}
 .bfoot{display:flex;gap:9px;flex-wrap:wrap;padding-top:10px}
 .pen.warn:hover{color:#c0503b;border-color:#c0503b}
+/* ── build them ──────────────────────────────────────────────────────────
+   A character page is the one place in the vault a player is meant to put
+   something IN, so the way in cannot be hidden behind a mode. It sits under
+   the name, always, and says what it is. */
+.bldbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:22px;
+ padding:14px 15px;border:1px solid var(--rule);border-radius:3px;background:rgba(26,23,20,.55);
+ backdrop-filter:blur(3px)}
+.bldlab{font-family:var(--mono);font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;
+ color:var(--rust-l);width:100%;margin-bottom:2px}
+.kitnone{border:1px dashed var(--rule2);border-radius:3px;padding:20px 18px;
+ font-size:14.5px;line-height:1.6;color:var(--parch-f);max-width:56ch}
+.kitnone b{display:block;font-family:var(--disp);font-weight:400;font-size:20px;
+ color:var(--parch-d);letter-spacing:-.012em;margin-bottom:7px}
+
+/* ── the web ─────────────────────────────────────────────────────────────
+   Even ring, even weight, no numbers. The only thing that moves is which one
+   is lit, and lighting one is how you get to the audio. */
+.web{margin:2px 0 8px}
+.websvg{display:block;width:100%;max-width:430px;margin:0 auto;height:auto;overflow:visible}
+.wline{stroke:var(--rule2);stroke-width:1;transition:stroke .35s,stroke-width .35s}
+.wline.on{stroke:var(--rust);stroke-width:1.6}
+.wring{fill:none;stroke:var(--rule2);stroke-width:1;transition:stroke .35s,stroke-width .35s}
+.wring.on{stroke:var(--rust-l);stroke-width:1.6}
+.wini{fill:var(--parch-f);font-family:var(--disp);font-weight:300;opacity:.6}
+.wnode{cursor:pointer}
+.wnode .wini{transition:fill .35s,opacity .35s}
+.wnode:hover .wring{stroke:var(--rust)}
+.wnode:hover .wini,.wnode.on .wini{fill:var(--rust-l);opacity:.95}
+.wnode:focus{outline:none}
+.wnode:focus .wring{stroke:var(--rust-l);stroke-width:1.8}
+.wlab{fill:var(--parch-f);font-family:var(--mono);font-size:9px;letter-spacing:.14em;
+ text-transform:uppercase;transition:fill .35s}
+.wlab.on{fill:var(--rust-l)}
+.wlab.me{fill:var(--parch-d);font-size:10px;letter-spacing:.2em}
+.wme .wring{stroke:var(--parch-f);stroke-width:1.4;opacity:.65}
+.wme .wini{fill:var(--parch-d);opacity:.5}
+.webnote{font-size:13px;color:var(--parch-f);text-align:center;margin:14px 0 20px;font-style:italic}
+.webpanel{border-top:1px solid var(--rule);padding-top:4px}
+.webhead{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;
+ color:var(--parch-f);padding:14px 0 6px;display:flex;flex-wrap:wrap;gap:10px;align-items:baseline}
+.webhead b{color:var(--parch-d);font-weight:400}
+.webhead span{margin-left:auto;color:var(--rust-l)}
+
 .qed{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
 .qed button{font-family:var(--mono);font-size:8px;letter-spacing:.14em;text-transform:uppercase;
  background:transparent;color:var(--parch-f);border:1px solid var(--rule2);border-radius:2px;
@@ -1709,6 +1752,76 @@ function moreBonds(name){
  else btn.innerHTML=`Show ten more <em>${vis.length-next} left</em>`;
 }
 
+/* ── the web ────────────────────────────────────────────────────────────
+   Six names, drawn. Not ninety-one in a list, not a number beside anybody,
+   and nothing arranged so that one of them looks like a winner: the ring is
+   even, the lines are the same weight, and the only claim it makes is the one
+   it states out loud — these are the names that come up alongside them most
+   often in the recordings. Tap one and the actual lines from those nights
+   appear underneath, each a timecode into the audio. Two taps to hearing it. */
+let WEBSEL={};
+function webPick(name,key){ WEBSEL[String(name).toLowerCase()]=key;
+ const host=$('web-'+slugify(name)); if(host) host.outerHTML=webBlock(standingOf(name)); }
+
+function nodeArt(nm){ const a=(CODEX.art||{})[String(nm).toLowerCase()]; return a&&a.hero||null; }
+
+function webBlock(st){
+ const T=st.T;
+ const six=st.bonds.filter(b=>!b.hidden&&b.n>=2).sort((a,b)=>b.n-a.n).slice(0,6);
+ if(six.length<3) return '';
+ const me=st.me, sel=WEBSEL[me]&&six.some(b=>b.key===WEBSEL[me])?WEBSEL[me]:six[0].key;
+ const cur=six.find(b=>b.key===sel);
+ const W=360,H=352,cx=180,cy=166,R=118,r=25;
+ const pt=i=>{ const a=(-90+i*(360/six.length))*Math.PI/180;
+  return [cx+R*Math.cos(a), cy+R*Math.sin(a)]; };
+ const clipDefs=[];
+ const disc=(nm,x,y,rad,i,on)=>{
+  const art=nodeArt(nm), id='wc'+i;
+  if(art) clipDefs.push(`<clipPath id="${id}"><circle cx="${x}" cy="${y}" r="${rad}"/></clipPath>`);
+  return (art?`<image href="${art}" x="${x-rad}" y="${y-rad}" width="${rad*2}" height="${rad*2}"
+      preserveAspectRatio="xMidYMid slice" clip-path="url(#${id})" opacity="${on?1:.62}"/>`
+    :`<text x="${x}" y="${y+rad*.34}" text-anchor="middle" class="wini" font-size="${rad*.95}">${esc(nm[0])}</text>`)
+   +`<circle cx="${x}" cy="${y}" r="${rad}" class="wring ${on?'on':''}"/>`;
+ };
+ let lines='',nodes='',labels='';
+ six.forEach((b,i)=>{
+  const [x,y]=pt(i), on=b.key===sel;
+  const dx=x-cx, dy=y-cy, L=Math.hypot(dx,dy);
+  lines+=`<line x1="${(cx+dx/L*44).toFixed(1)}" y1="${(cy+dy/L*44).toFixed(1)}"
+    x2="${(x-dx/L*(r+2)).toFixed(1)}" y2="${(y-dy/L*(r+2)).toFixed(1)}" class="wline ${on?'on':''}"/>`;
+  nodes+=`<g class="wnode ${on?'on':''} ${b.kind==='pc'?'kin':''}" tabindex="0" role="button"
+     onclick="webPick(${JSON.stringify(st.name).replace(/"/g,'&quot;')},${JSON.stringify(b.key).replace(/"/g,'&quot;')})"
+     onkeydown="if(event.key==='Enter')this.onclick()">
+    <circle cx="${x}" cy="${y}" r="${r+11}" fill="transparent"/>
+    ${disc(b.name,x,y,r,i,on)}</g>`;
+  labels+=`<text x="${x}" y="${y+r+19}" text-anchor="middle" class="wlab ${on?'on':''}">${esc(trim(b.name,15))}</text>`;
+ });
+ const pick=(()=>{ const seen=new Set(), out=[];
+  [...cur.ev.slice(0,2),...(cur.tail||[]).slice(-2)].forEach(e=>{
+   const k=e.sn+'|'+e.t+'|'+e.head; if(seen.has(k))return; seen.add(k); out.push(e); });
+  return out; })();
+
+ return `<div class="web" id="web-${slugify(st.name)}">
+  <svg viewBox="0 0 ${W} ${H}" class="websvg" role="img"
+     aria-label="The names the recordings put alongside ${esc(st.name)} most often">
+   <defs>${clipDefs.join('')}</defs>
+   ${lines}
+   <g class="wme">${disc(st.name,cx,cy,40,'me',false)}</g>
+   <text x="${cx}" y="${cy+40+19}" text-anchor="middle" class="wlab me">${esc(trim(st.name,16))}</text>
+   ${nodes}${labels}
+  </svg>
+  <p class="webnote">The names that come up alongside them most in the recordings. Tap one.</p>
+  <div class="webpanel">
+   <div class="webhead"><b>${esc(st.name)}</b> and <b>${esc(cur.name)}</b>
+     <span>${cur.first===cur.last?`Session ${cur.last}`:`Sessions ${cur.first}–${cur.last}`}</span></div>
+   ${pick.map(e=>`<div class="li" onclick="jump(${e.si},${e.t==null?'null':e.t})">
+     <span class="tc ${e.t==null?'none':''}">${fmt(e.t)}</span>
+     <p><b style="font-weight:400">${esc(e.head)}</b> — ${esc(trim(e.line,180))}
+      <span class="src">Session <b>${e.sn}</b></span></p></div>`).join('')}
+   <div class="bfoot"><button class="pen" onclick="openE(${JSON.stringify(cur.name).replace(/"/g,'&quot;')})">Open ${esc(cur.name)}</button></div>
+  </div></div>`;
+}
+
 function standBlock(st){
  const q=JSON.stringify(st.name).replace(/"/g,'&quot;');
  const vis=sceneList(st.name);
@@ -1719,7 +1832,9 @@ function standBlock(st){
   return `<div class="prevnone">The record has not met them yet. The first night they play,
     everyone they share a scene with starts appearing here on its own.</div>`;
 
- return (vis.length?`<p class="standnote">Everyone the recordings put in a scene with them, the most recent first.
+ return webBlock(st)
+  +(vis.length?`<div class="bhead">Everyone else <span class="c">${vis.length}</span></div>
+    <p class="standnote">Everyone the recordings put in a scene with them, the most recent first.
      Open one to hear the night it happened.</p>
     <div class="bonds">${standRows(vis.slice(0,8),st.name)}</div>
     ${vis.length>8?`<div class="bonds" id="b-more" data-i="8"></div>
@@ -2154,21 +2269,25 @@ function openE(name,focusN){
             :pc&&pc.status==='incoming'?' · joining soon':'';
  $('e-name').textContent=e.name;
 
- const pen=f=>EDIT?` <button class="pen" onclick="editMeta(${q},'${f}')">edit</button>`:'';
+ /* Anything about the person — their picture, the line under their name, the
+    things they carry — is always open to whoever is holding the phone. Only
+    the campaign's own record stays behind Edit. */
+ const BUILD=(e.kind==='pc')||EDIT;
+ const pen=f=>BUILD?` <button class="pen" onclick="editMeta(${q},'${f}')">edit</button>`:'';
  $('e-extra').innerHTML=
-   (meta.sub||EDIT?`<div class="esub">${esc(meta.sub)||'<i class="dim">no subtitle yet</i>'}${pen('sub')}</div>`:'')
-  +(meta.blurb||EDIT?`<div class="eblurb">${esc(meta.blurb)||'<i class="dim">no line written yet</i>'}${pen('blurb')}</div>`:'')
+   (meta.sub||BUILD?`<div class="esub">${esc(meta.sub)||'<i class="dim">no subtitle yet</i>'}${pen('sub')}</div>`:'')
+  +(meta.blurb||BUILD?`<div class="eblurb">${esc(meta.blurb)||'<i class="dim">no line written yet</i>'}${pen('blurb')}</div>`:'')
   +(art.gallery.length?`<div class="gal">${art.gallery.map(g=>
      `<div class="galimg" style="background-image:url('${g}')" onclick="lightbox('${g}')">
-       ${EDIT?`<span class="galx" onclick="event.stopPropagation();rmArt(${q},'${g}')">×</span>`:''}</div>`).join('')}</div>`:'')
-  +(EDIT?`<div class="uploads">
-      <label class="up">${art.hero?'Replace the picture':'Add a picture'}
+       ${BUILD?`<span class="galx" onclick="event.stopPropagation();rmArt(${q},'${g}')">×</span>`:''}</div>`).join('')}</div>`:'')
+  +(BUILD?`<div class="bldbar">
+      <span class="bldlab">Build them</span>
+      <label class="up">${art.hero?'Change the picture':'Add a picture'}
         <input type="file" accept="image/*" onchange="upArt(${q},'hero',this)"></label>
       <label class="up">Add to the gallery
         <input type="file" accept="image/*" multiple onchange="upArt(${q},'gallery',this)"></label>
+      <button class="up" onclick="editMeta(${q},'blurb')">Write their line</button>
       ${art.hero?`<button class="up danger" onclick="rmHero(${q})">Remove the picture</button>`:''}
-      <span class="uphint">${SYNC.on?'Pictures upload to the shared vault — everyone sees them, and the page stays light.'
-                                    :'No connection, so pictures are stored inside this file for now.'}</span>
     </div>`:'');
 
  const chapters=arcOf(e); STRIP=chapters; MKARMED=-1;
@@ -2212,7 +2331,7 @@ function openE(name,focusN){
  const kit=(K.length?`<div class="kit">${K.map(it=>{
    const iq=JSON.stringify(it.id).replace(/"/g,'&quot;');
    return `<div class="kitem ${it.vis==='mine'?'mine':''} ${EDIT&&!it.img?'noimg':''}">
-    ${EDIT?`<div class="kedit">
+    ${BUILD?`<div class="kedit">
       <button onclick="this.nextElementSibling.click()">${it.img?'Change':'Picture'}</button>
       <input type="file" accept="image/*" hidden onchange="upKit(${q},${iq},this)">
       <button onclick="editKit(${q},${iq})">Edit</button>
@@ -2225,34 +2344,38 @@ function openE(name,focusN){
       ${it.vis==='mine'?'<span class="tagm">Just yours</span>':''}
       ${it.who?`<span class="tagl">${esc(it.who)}</span>`:''}</div>
     </div></div>`;}).join('')}</div>`
-  :EDIT?'<div class="prevnone">Nothing in their kit yet.</div>':'')
- +(EDIT?`<div class="uploads"><button class="up" onclick="addKit(${q})">Add something they carry</button>
-    <span class="uphint">Name something the campaign already knows and the vault will link it to the Codex on its own.</span></div>`:'');
+  :BUILD?`<div class="kitnone">
+      <b>Nothing here yet.</b>
+      A weapon, a keepsake, a debt, a letter they have never opened. Each one can carry
+      its own picture, and if you name something the campaign already knows, the vault
+      joins them up on its own.</div>`:'')
+ +(BUILD?`<div class="uploads"><button class="up" onclick="addKit(${q})">Add something they carry</button>
+    <span class="uphint">Everything here can be edited, given a picture, or kept to yourself — nothing is final.</span></div>`:'');
 
  /* ── what they declare ── */
  const SY=sayOf(e.name);
  const anySay=SAYS.some(([f])=>SY[f]&&SY[f].v&&canSee(SY[f]));
- const said2=(anySay||EDIT)?`<div class="said">${SAYS.map(([f,label])=>{
+ const said2=(anySay||BUILD)?`<div class="said">${SAYS.map(([f,label])=>{
    const o=SY[f]; const show=o&&o.v&&canSee(o);
-   if(!show&&!EDIT) return '';
+   if(!show&&!BUILD) return '';
    return `<div class="sayrow"><div class="sq">${esc(label)}</div><div>
      <div class="sa ${show?'':'empty'}">${show?esc(o.v):'Not answered yet.'}</div>
      <div class="sbar">${show?'<span class="tagp">Not played yet</span>':''}
       ${show&&o.vis==='mine'?'<span class="tagm">Just yours</span>':''}
-      ${EDIT?`<button class="pen" onclick="sayEdit(${q},'${f}')">${show?'change':'answer it'}</button>`:''}</div>
+      ${BUILD?`<button class="pen" onclick="sayEdit(${q},'${f}')">${show?'change':'answer it'}</button>`:''}</div>
     </div></div>`;}).join('')}</div>`:'';
 
  $('e-body').innerHTML=
    stripFor(chapters)
+  +esec('kit','What they carry',K.length||null,kit,BUILD)
   +esec('arc','Their arc',chapters.length,arc?`<div class="arc">${arc}</div>
      <div class="arcfoot">Tap any session to open what was said that night.</div>`
      :(pc?`<div class="prevnone">Nothing recorded yet. The first night they play, their arc starts writing itself here.</div>`:''),false)
-  +esec('kit','What they carry',K.length||null,kit,false)
   +esec('said2','Where they come from',null,said2,false)
   +esec('music','Their music',null,music,false)
   +esec('said','Everything said about them',seen.size,said,false)
   +esec('known','What the table knows',null,known,false)
-  +esec('stand','In scenes with',null,standBlock(standingOf(e.name)),false,
+  +esec('stand','Connections',null,standBlock(standingOf(e.name)),false,
         '<span class="fromrec">found in the record</span>');
  go('entity');
  if(focusN!=null){
