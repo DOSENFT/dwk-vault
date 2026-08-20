@@ -313,14 +313,21 @@ h1.st{font-size:clamp(34px,4.6vw,56px);font-weight:300;line-height:1.04;letter-s
 .gap::before{content:'!';position:absolute;left:0;color:var(--gold);font-family:var(--mono);font-size:11px}
 
 /* ── codex ── */
-.ehero{position:absolute;left:0;right:0;top:0;height:62vh;z-index:0;pointer-events:none;
- background-size:cover;background-position:center 20%;opacity:0;transition:opacity 1.1s ease;
- -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.85) 0%,rgba(0,0,0,.5) 42%,transparent 92%);
- mask-image:linear-gradient(180deg,rgba(0,0,0,.85) 0%,rgba(0,0,0,.5) 42%,transparent 92%)}
-.ehero.on{opacity:.42}
+/* A character with a picture gets that picture as the background of their
+   own page — the same still, masked, fixed layer the atmosphere plates use,
+   because that is the look that works. It used to be a second band laid over
+   the plate, and the two of them blended into mud. Now the plate stands down
+   and the face takes the whole page. */
+.ehero{position:fixed;left:0;right:0;top:0;height:100vh;height:100lvh;z-index:-1;
+ pointer-events:none;transform:translateZ(0);backface-visibility:hidden;
+ background-size:cover;background-position:center 18%;background-repeat:no-repeat;
+ opacity:0;transition:opacity 1.2s cubic-bezier(.4,0,.2,1);
+ -webkit-mask-image:radial-gradient(125% 92% at 50% 4%,rgba(0,0,0,.97) 0%,rgba(0,0,0,.6) 40%,transparent 90%);
+ mask-image:radial-gradient(125% 92% at 50% 4%,rgba(0,0,0,.97) 0%,rgba(0,0,0,.6) 40%,transparent 90%)}
+.ehero.on{opacity:.5}
 #v-entity{position:relative}
 #v-entity .wrap{position:relative;z-index:2}
-body.haspc .ehead{padding-top:16vh}
+body.haspc .ehead{padding-top:13vh}
 body.haspc #e-name{text-shadow:0 2px 30px rgba(18,16,14,.9)}
 .artbar{margin-top:22px}
 .gal{display:flex;gap:9px;flex-wrap:wrap;margin-top:6px}
@@ -477,20 +484,17 @@ body.haspc #e-name{text-shadow:0 2px 30px rgba(18,16,14,.9)}
    The bond rows borrow the strip's grammar deliberately — the vault already
    taught this page that height means "more happened", and it should not have
    to teach it twice. */
+/* Nobody knew these boxes opened, so the closed ones now say so. */
+.esec:not([open])>summary::after{content:'open';font-family:var(--mono);font-size:8px;
+ letter-spacing:.2em;text-transform:uppercase;color:var(--parch-f);margin-left:auto;
+ padding-left:14px;opacity:.7}
+.esec[open]>summary::after{content:'close';font-family:var(--mono);font-size:8px;
+ letter-spacing:.2em;text-transform:uppercase;color:var(--parch-f);margin-left:auto;
+ padding-left:14px;opacity:.45}
+@media(max-width:520px){.esec .fromrec{display:none}}
 .esec .fromrec{font-family:var(--mono);font-size:8px;letter-spacing:.2em;text-transform:uppercase;
  color:var(--moss);border:1px solid rgba(107,143,107,.36);background:rgba(107,143,107,.05);
  padding:3px 7px;border-radius:2px;margin-left:10px;white-space:nowrap}
-.rdg{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
- padding:26px 0 24px;margin:2px 0 30px}
-.rdg h3{font-family:var(--disp);font-weight:400;font-size:27px;line-height:1.2;
- letter-spacing:-.021em;margin:0;max-width:22ch;color:var(--parch)}
-.rdg p{font-size:15px;line-height:1.55;color:var(--parch-d);margin:12px 0 0;max-width:46ch}
-.rdgalso{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:11px}
-.rdgalso li{position:relative;padding-left:16px;font-size:14.5px;line-height:1.5;color:var(--parch-d)}
-.rdgalso li::before{content:'';position:absolute;left:0;top:8px;width:5px;height:5px;
- border-radius:50%;background:var(--moss);opacity:.7}
-.rdgalso li span{display:block;color:var(--parch-f);font-size:13px;margin-top:2px}
-@media(min-width:701px){.rdg h3{font-size:34px;max-width:26ch}}
 
 .bhead{font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;
  color:var(--parch-f);margin:30px 0 12px;display:flex;align-items:center;gap:9px}
@@ -499,7 +503,7 @@ body.haspc #e-name{text-shadow:0 2px 30px rgba(18,16,14,.9)}
 .bonds{display:grid;gap:1px;background:var(--rule)}
 .bonds.hidden{display:none}
 .bond{position:relative;background:var(--pitch);padding:13px 14px 12px;cursor:pointer;
- display:grid;grid-template-columns:1fr auto;grid-template-areas:'name car' 'num car' 'spk spk' 'rec rec';
+ display:grid;grid-template-columns:1fr auto;grid-template-areas:'name car' 'num car' 'rec rec';
  align-items:center;column-gap:12px;transition:background .25s}
 .bond:hover{background:var(--panel)}
 .bond .bname{grid-area:name;font-family:var(--disp);font-size:18px;letter-spacing:-.012em;
@@ -509,51 +513,40 @@ body.haspc #e-name{text-shadow:0 2px 30px rgba(18,16,14,.9)}
 .bond .bnum{grid-area:num;font-family:var(--mono);font-size:9px;letter-spacing:.13em;
  text-transform:uppercase;color:var(--parch-f);margin-top:5px}
 .bond .bnum b{color:var(--parch-d);font-weight:400}
-.bond .bspk{grid-area:spk;margin-top:11px}
-.bond .btags{grid-area:spk;display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.bond .btags{grid-area:rec;display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:10px}
 .bond .bcar{grid-area:car;font-size:11px;color:var(--parch-f);transition:transform .3s,color .3s}
 .bond.open .bcar{transform:rotate(180deg);color:var(--rust-l)}
 .bond.kin .bname{color:var(--parch)}
 .bond.kin{background:#15120f}
-.bond.top .bname::after{content:'closest';font-family:var(--mono);font-size:7.5px;letter-spacing:.2em;
- text-transform:uppercase;color:var(--rust-l);margin-left:10px;vertical-align:2px}
 .bond.off{opacity:.4;cursor:default}
 .bond.said2{cursor:default}
-.spk{display:block;width:100%;height:24px;overflow:visible}
-.spk rect{fill:var(--parch-f)}
-.bond.kin .spk rect{fill:var(--rust-l)}
-.bond.top .spk rect{fill:var(--rust-l)}
-.spk .spkbase{fill:var(--rule2);opacity:.85}
 .bond .brec{grid-area:rec;max-height:0;overflow:hidden;opacity:0;
  transition:max-height .45s cubic-bezier(.2,.9,.3,1),opacity .3s,margin .3s}
 .bond.open .brec{max-height:1400px;opacity:1;margin-top:14px}
+.standnote{font-size:14px;line-height:1.55;color:var(--parch-d);margin:0 0 16px;max-width:52ch}
+.up.wide em{font-style:normal;color:var(--parch-f);margin-left:8px}
 .brechead{font-family:var(--mono);font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;
  color:var(--parch-f);padding:10px 0 4px;border-top:1px solid var(--rule)}
 .bfoot{display:flex;gap:9px;flex-wrap:wrap;padding-top:10px}
 .pen.warn:hover{color:#c0503b;border-color:#c0503b}
+.qed{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.qed button{font-family:var(--mono);font-size:8px;letter-spacing:.14em;text-transform:uppercase;
+ background:transparent;color:var(--parch-f);border:1px solid var(--rule2);border-radius:2px;
+ padding:4px 8px;cursor:pointer}
+.qed button:hover{color:var(--rust-l);border-color:var(--rust)}
+.qed button.danger:hover{color:#c0503b;border-color:#c0503b}
+.li.put{opacity:.45}
 .up.wide{width:100%;justify-content:center;text-align:center;margin-top:1px}
 .qs.hidden{display:none}
-.bonds{position:relative}
-.spk rect[data-n]{transition:opacity .14s,fill .14s}
-.bonds[data-lit] .spk rect[data-n]{opacity:.14}
-.bonds .spk rect[data-n].lit{opacity:1}
-.scrubtag{position:absolute;top:-9px;transform:translateX(-50%);pointer-events:none;
- font-family:var(--mono);font-size:8px;letter-spacing:.18em;text-transform:uppercase;
- color:var(--rust-l);background:var(--pitch);border:1px solid var(--rust);
- border-radius:2px;padding:3px 7px;white-space:nowrap;z-index:4}
-.bonds[data-lit] .spk .spkbase{opacity:.85}
 .firstt{display:inline-block;font-family:var(--mono);font-size:7.5px;letter-spacing:.19em;
  text-transform:uppercase;color:var(--moss);border:1px solid rgba(107,143,107,.4);
  border-radius:2px;padding:2px 6px;margin-right:9px;vertical-align:2px}
 .firstt.last{color:var(--parch-f);border-color:var(--rule2)}
 .qs{display:grid}
 @media(min-width:701px){
- .bond{grid-template-columns:minmax(150px,1fr) 210px auto;
-  grid-template-areas:'name spk num car' 'rec rec rec rec';column-gap:20px}
- .bond{grid-template-columns:minmax(150px,1fr) 210px minmax(150px,auto) auto}
+ .bond{grid-template-columns:minmax(150px,1fr) minmax(140px,auto) auto;
+  grid-template-areas:'name num car' 'rec rec rec';column-gap:20px}
  .bond .bnum{margin-top:0;text-align:right}
- .bond .bspk{margin-top:0}
- .bond .btags{grid-area:spk;margin-top:0;justify-content:center}
 }
 .shpick button{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
  background:transparent;border:1px solid var(--rule2);border-radius:2px;padding:6px 9px;
@@ -1300,13 +1293,20 @@ function codexIndex(){
   const lk=key.toLowerCase();
   if((CODEX.hidden||[]).includes(lk)) return;
   if(CODEX.merges&&CODEX.merges[lk]) key=CODEX.merges[lk];
-  const k=key.toLowerCase();
-  const rec=(ix[k]=ix[k]||{name:CODEX.renames?.[k]||key,kind:e.kind,hits:[],aliases:new Set(),reveal:null});
-  if(CODEX.kinds&&CODEX.kinds[k]) rec.kind=CODEX.kinds[k];
-  if(e.alias) rec.aliases.add(e.alias);
-  if(String(e.name).toLowerCase()!==k) rec.aliases.add(e.name);
-  if(e.reveal) rec.reveal=e.reveal;
-  rec.hits.push({s,e});
+  const k0=key.toLowerCase();
+  /* the transcriber sometimes wrote two people down as one card —
+     "Ponsey / Talon". Splitting sends the card's whole history to both,
+     without editing a syllable of what was recorded. */
+  const sp=(CODEX.splits||{})[k0];
+  (sp&&sp.length?sp:[key]).forEach(nm=>{
+   const k=String(nm).toLowerCase();
+   const rec=(ix[k]=ix[k]||{name:CODEX.renames?.[k]||nm,kind:e.kind,hits:[],aliases:new Set(),reveal:null});
+   if(CODEX.kinds&&CODEX.kinds[k]) rec.kind=CODEX.kinds[k];
+   if(e.alias) rec.aliases.add(e.alias);
+   if(!sp&&String(e.name).toLowerCase()!==k) rec.aliases.add(e.name);
+   if(e.reveal) rec.reveal=e.reveal;
+   rec.hits.push({s,e});
+  });
  }));
  Object.values(ix).forEach(r=>{ r.first=Math.min(...r.hits.map(h=>h.s.n)); });
  return ix;
@@ -1324,7 +1324,7 @@ function buildCodex(){
   .map(([k,l,e])=>`<button class="tab ${CXTAB===k?'on':''}" onclick="cxTab('${k}')">${l} <em>${e}</em></button>`).join('');
  return buildCodexBody(ix);
 }
-function thr(){ return SESSIONS.reduce((a,s)=>a+(s.threads||[]).filter(t=>!t.resolved).length,0); }
+function thr(){ return SESSIONS.reduce((a,s)=>a+(s.threads||[]).filter(t=>!t.resolved&&!t.hidden).length,0); }
 let CXTAB='all';
 function cxTab(k){ CXTAB=k;
  $('cx-pane-all').hidden=k!=='all'; $('cx-pane-threads').hidden=k!=='threads';
@@ -1422,6 +1422,7 @@ function buildCodexBody(ix){
          </select>
          <button onclick="renameE(${JSON.stringify(e.name).replace(/"/g,'&quot;')})">rename</button>
          <button onclick="mergeE(${JSON.stringify(e.name).replace(/"/g,'&quot;')})">merge…</button>
+         <button onclick="splitE(${JSON.stringify(e.name).replace(/"/g,'&quot;')})">two people…</button>
          <button class="danger" onclick="hideE(${JSON.stringify(e.name).replace(/"/g,'&quot;')})">hide</button>
        </div>`:''}</div>`;
     }).join('')+`</div></div>`;
@@ -1503,6 +1504,17 @@ function mergeE(name){
   if(!v)return;
   if(!others.some(n=>n.toLowerCase()===v.toLowerCase())){ alert('No codex entry named “'+v+'”. Nothing changed.'); return; }
   pushEdit('codex',{op:'merge',key:name.toLowerCase(),value:others.find(n=>n.toLowerCase()===v.toLowerCase())});
+  buildCodex();
+}
+function splitE(name){
+  const v=prompt('This card is really more than one person or place?\n\n'
+   +'Type the names it should become, separated by a comma. Everything the card '
+   +'knows goes to each of them — the recordings are not touched.\n\n'
+   +'For example: Ponzi, Talon', name.split(/\s*[\/&]\s*/).join(', '));
+  if(v===null) return;
+  const names=v.split(',').map(x=>x.replace(/\s+/g,' ').trim()).filter(Boolean);
+  if(names.length<2){ alert('That needs at least two names, separated by a comma. Nothing changed.'); return; }
+  pushEdit('codex',{op:'split',key:name.toLowerCase(),value:names});
   buildCodex();
 }
 function hideE(name){
@@ -1609,8 +1621,11 @@ function tieIndex(){
  /* which of the open questions have this name in them */
  const Q=new Map();
  SESSIONS.forEach(s=>{ const si=SESSIONS.indexOf(s);
-  (s.threads||[]).forEach(t=>cast(t.q).forEach(k=>{
-   const a=Q.get(k)||[]; a.push({si,sn:s.n,t:t.t,q:t.q,u:t.u,resolved:!!t.resolved}); Q.set(k,a); })); });
+  (s.threads||[]).forEach((t,ti)=>cast(t.q).forEach(k=>{
+   const a=Q.get(k)||[];
+   a.push({si,ti,slug:s.slug,sn:s.n,t:t.t,q:t.q,u:t.u,
+           resolved:!!t.resolved,hidden:!!t.hidden});
+   Q.set(k,a); })); });
 
  const first=SESSIONS.reduce((a,s)=>Math.min(a,s.n),1e9);
  const last =SESSIONS.reduce((a,s)=>Math.max(a,s.n),0);
@@ -1623,81 +1638,7 @@ function tieIndex(){
    One true sentence about where somebody stands, chosen by which true thing
    is the most worth saying. Every one of these is checked against the record
    before it is written, and if none of them holds, nothing is claimed. */
-const WORD=['no','one','two','three','four','five','six','seven','eight','nine','ten',
- 'eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen',
- 'nineteen','twenty'];
-const num=n=>n<=20?WORD[n]:String(n);
-const Num=n=>{ const w=num(n); return w[0].toUpperCase()+w.slice(1); };
 
-function readingFor(st){
- const T=st.T; let out=[]; const N=T.nights.length, last=T.last;
- const vis=st.bonds.filter(b=>!b.hidden);
- const top=vis[0];
- if(!top) return out;
-
- /* never apart — and only worth saying if it is theirs alone */
- if(top.nights.length===N){
-  let others=0; T.P.forEach(v=>{ if(Object.keys(v.by).length===N) others++; });
-  out.push({tag:"never",w:100,
-   head:`${Num(N)} nights, and ${top.name} in every one.`,
-   sub:others<=1?'No other pair in this campaign has never once been apart.'
-                :'The record does not have a night that separates them.'});
- }
-
- /* the strongest pair in the whole campaign */
- let best=0; T.P.forEach(v=>{ if(v.n>best) best=v.n; });
- if(top.n===best) out.push({tag:"strongest",w:92,
-  head:`Nobody in this campaign is named together more than ${st.name} and ${top.name}.`,
-  sub:`${Num(top.n)} moments across ${num(top.nights.length)} nights — the highest count the vault holds.`});
-
- /* a bond that stopped */
- const quiet=vis.filter(b=>b.n>=10&&last-b.last>=4&&b.nights.length>=3)
-   .sort((a,b)=>b.n-a.n)[0];
- if(quiet) out.push({tag:"quiet",w:80,
-  head:`${st.name} and ${quiet.name} shared ${num(quiet.nights.length)} nights. The last was Session ${quiet.last}.`,
-  sub:'The record has not put them in the same moment since.'});
-
- /* a bond that only started recently */
- const cut=T.first+Math.floor(N*0.66);
- const late=vis.filter(b=>b.n>=6&&b.first>=cut).sort((a,b)=>b.n-a.n)[0];
- if(late) out.push({tag:"late",w:72,
-  head:`${late.name} is new to this story — the record only starts putting them together at Session ${late.first}.`,
-  sub:`${Num(late.n)} moments since, which is quick for ${num(last-late.first+1)} nights.`});
-
- /* somebody the record itself has stopped seeing */
- const meE=T.ix[st.me];
- if(meE&&meE.hits&&meE.hits.length){
-  const own=[...new Set(meE.hits.map(h=>h.s.n))].sort((a,b)=>a-b);
-  if(last-own[own.length-1]>=3&&own.length>=2) out.push({tag:"gone",w:88,
-   head:`The record's last sighting of ${st.name} is Session ${own[own.length-1]}.`,
-   sub:`${Num(own.length)} nights before that, and nothing since.`});
- }
-
- /* the open questions */
- const mine=st.threads.length;
- if(mine>=3){
-  let total=0, beaten=0;
-  SESSIONS.forEach(x=>total+=(x.threads||[]).length);
-  T.Q.forEach((v,k)=>{ if(k!==st.me&&v.length>mine) beaten++; });
-  out.push({tag:"questions",w:beaten===0?86:52,
-   head:`${Num(mine)} of the ${total} questions still hanging over this campaign have ${st.name}'s name in them.`,
-   sub:beaten===0?'More than any other name in the vault.'
-                 :`Only ${num(beaten)} ${beaten===1?'name carries':'names carry'} more.`});
- }
-
- /* sheer reach */
- if(vis.length>=25) out.push({tag:"reach",w:36,
-  head:`The record has stood ${st.name} beside ${vis.length} different names.`,
-  sub:'People, places, factions and things — everything the sixteen nights put in the same breath.'});
-
- /* and if none of that is true, say the plain thing */
- if(!out.length) out.push({tag:"plain",w:10,
-  head:`${st.name} is named beside ${top.name} more than anyone else.`,
-  sub:`${Num(top.n)} moments across ${num(top.nights.length)} ${top.nights.length===1?'night':'nights'}.`});
-
- if(out.some(x=>x.tag==='gone')) out=out.filter(x=>x.tag!=='quiet');
- return out.sort((a,b)=>b.w-a.w);
-}
 
 /* everything the record has to say about where one name stands */
 function standingOf(name){
@@ -1722,100 +1663,89 @@ function standingOf(name){
    that night was busy between the two of them — so a friendship that grew,
    a friendship that stopped, and a friendship that was only ever one evening
    all look like themselves at a glance, before a word is read. */
-function spark(b,peak,T){
- /* the row is stretched to whatever width it gets, so the tick has to be a
-    small fraction of its own pitch or it arrives as a fat block */
- const N=T.nights.length, PITCH=20, BAR=5, W=N*PITCH;
- const bars=T.nights.map((n,i)=>{
-  const v=b.by[n]||0;
-  const h=v?3+Math.round((v/peak)*19*10)/10:1.6;
-  return `<rect data-n="${n}" x="${i*PITCH+(PITCH-BAR)/2}" y="${(22.6-h).toFixed(1)}" width="${BAR}" height="${h.toFixed(1)}" rx="2"`
-   +(v?'':' opacity=".18"')+`><title>Session ${n} — ${v?v+(v===1?' moment':' moments'):'not together'}</title></rect>`;
- }).join('');
- return `<svg class="spk" viewBox="0 0 ${W} 24" preserveAspectRatio="none" aria-hidden="true">
-   <rect x="0" y="22.8" width="${W}" height="0.6" class="spkbase"></rect>${bars}</svg>`;
-}
 const KTAG={pc:'',npc:'person',creature:'creature',faction:'faction',nation:'nation',
  place:'place',item:'thing',deity:'god',asterum:'asterum'};
 
-function standBlock(st){
- const T=st.T, q=JSON.stringify(st.name).replace(/"/g,'&quot;');
- const vis=st.bonds.filter(b=>!b.hidden);
- const hid=st.bonds.filter(b=>b.hidden);
- if(!vis.length&&!st.threads.length&&!st.own.length&&!hid.length)
-  return `<div class="prevnone">The record has not met them yet. The first night they play,
-    everyone they are named beside starts appearing here on its own.</div>`;
-
- const peak=Math.max(1,...vis.map(b=>Math.max(...Object.values(b.by))));
- const rdg=readingFor(st);
- const head=rdg[0], also=rdg.slice(1,3);
-
- const row=(b,i)=>{
-  const id=`bd${i}`;
-  /* the opening of the story and its latest page, never the middle */
+/* No counts, no ranking, no shapes. How often two names land in the same
+   paragraph is not a measure of how close two people are, and the moment a
+   number like that is printed on a page somebody reads it as one. What is
+   true, and what is useful, is only this: here is somebody they shared a
+   scene with, and here are the lines from the night it happened. */
+function sceneList(name){
+ const st=standingOf(name);
+ return st.bonds.filter(b=>!b.hidden&&b.n>=2)
+   .sort((a,b)=>b.last-a.last||a.name.localeCompare(b.name));
+}
+function standRows(list,name){
+ const q=JSON.stringify(name).replace(/"/g,'&quot;');
+ return list.map(b=>{
   const seen=new Set(), pick=[];
-  [...b.ev.slice(0,3),...(b.tail||[]).slice(-2)].forEach(e=>{
+  [...b.ev.slice(0,2),...(b.tail||[]).slice(-2)].forEach(e=>{
    const k=e.sn+'|'+e.t+'|'+e.head; if(seen.has(k)) return; seen.add(k); pick.push(e); });
-  const rec=pick.map((e,k)=>`<div class="li" onclick="event.stopPropagation();jump(${e.si},${e.t==null?'null':e.t})">
+  const rec=pick.map(e=>`<div class="li" onclick="event.stopPropagation();jump(${e.si},${e.t==null?'null':e.t})">
      <span class="tc ${e.t==null?'none':''}">${fmt(e.t)}</span>
-     <p>${k===0?'<span class="firstt">the first time</span>':''}${k===pick.length-1&&pick.length>1?'<span class="firstt last">most recent</span>':''}<b style="font-weight:400">${esc(e.head)}</b> — ${esc(trim(e.line,190))}
+     <p><b style="font-weight:400">${esc(e.head)}</b> — ${esc(trim(e.line,190))}
       <span class="src">Session <b>${e.sn}</b></span></p></div>`).join('');
-  return `<div class="bond ${b.kind==='pc'?'kin':''} ${i===0?'top':''}" onclick="bondTap(this)"
+  return `<div class="bond ${b.kind==='pc'?'kin':''}" onclick="bondTap(this)"
       role="button" tabindex="0" onkeydown="if(event.key==='Enter')bondTap(this)">
    <div class="bname">${esc(b.name)}${KTAG[b.kind]?`<em>${KTAG[b.kind]}</em>`:''}</div>
-   <div class="bnum"><b>${b.n}</b> moment${b.n===1?'':'s'} · <b>${b.nights.length}</b> night${b.nights.length===1?'':'s'}</div>
-   <div class="bspk">${spark(b,peak,T)}</div>
+   <div class="bnum">${b.first===b.last?`Session ${b.last}`:`Sessions ${b.first}–${b.last}`}</div>
    <div class="bcar" aria-hidden="true">▾</div>
-   <div class="brec">
-     <div class="brechead">Sessions ${b.first}–${b.last} · the record putting them together</div>
-     ${rec}
+   <div class="brec">${rec}
      <div class="bfoot">
        <button class="pen" onclick="event.stopPropagation();openE(${JSON.stringify(b.name).replace(/"/g,'&quot;')})">Open ${esc(b.name)}</button>
-       ${EDIT?`<button class="pen warn" onclick="event.stopPropagation();hideTie(${q},${JSON.stringify(b.key).replace(/"/g,'&quot;')})">This one is wrong</button>`:''}
-     </div>
-   </div></div>`;
- };
+       ${EDIT?`<button class="pen warn" onclick="event.stopPropagation();hideTie(${q},${JSON.stringify(b.key).replace(/"/g,'&quot;')})">Not really, take it off</button>`:''}
+     </div></div></div>`;
+ }).join('');
+}
+/* ten at a time, because seventy-six at a time is a wall */
+function moreBonds(name){
+ const host=$('b-more'), btn=$('b-morebtn'); if(!host||!btn) return;
+ const vis=sceneList(name);
+ const at=+host.dataset.i||8, next=Math.min(vis.length,at+10);
+ host.insertAdjacentHTML('beforeend', standRows(vis.slice(at,next),name));
+ host.dataset.i=next;
+ if(next>=vis.length) btn.remove();
+ else btn.innerHTML=`Show ten more <em>${vis.length-next} left</em>`;
+}
 
- const NB=`onpointermove="litNight(event,this)" onpointerleave="unlitNight(this)"`;
- const kin=vis.filter(b=>b.kind==='pc'), rest=vis.filter(b=>b.kind!=='pc');
- const shown=rest.slice(0,5), more=rest.slice(5);
- const QN=5, qs=st.threads.slice().sort((a,b)=>({hi:0,md:1,lo:2}[a.u]-{hi:0,md:1,lo:2}[b.u])||a.sn-b.sn);
+function standBlock(st){
+ const q=JSON.stringify(st.name).replace(/"/g,'&quot;');
+ const vis=sceneList(st.name);
+ const hid=st.bonds.filter(b=>b.hidden);
+ const qs=st.threads.filter(t=>!t.hidden)
+   .sort((a,b)=>(a.resolved?1:0)-(b.resolved?1:0)||b.sn-a.sn);
+ if(!vis.length&&!qs.length&&!st.own.length&&!hid.length)
+  return `<div class="prevnone">The record has not met them yet. The first night they play,
+    everyone they share a scene with starts appearing here on its own.</div>`;
 
- const own=st.own.filter(canSee).map((o,i)=>`<div class="bond said2">
-   <div class="bname">${esc(o.name)}</div>
-   <div class="bnum">${esc(o.how||'')}</div>
-   <div class="bspk"></div>
-   <div class="btags"><span class="tagp">Not played yet</span>${o.vis==='mine'?'<span class="tagm">Just yours</span>':''}${o.who?`<span class="tagl">${esc(o.who)}</span>`:''}
-     ${EDIT?`<button class="pen warn" onclick="rmTie(${q},'${o.id}')">Remove</button>`:''}</div>
-  </div>`).join('');
-
- return (head?`<div class="rdg">
-    <h3>${esc(head.head)}</h3><p>${esc(head.sub)}</p>
-    ${also.length?`<ul class="rdgalso">${also.map(a=>`<li>${esc(a.head)} <span>${esc(a.sub)}</span></li>`).join('')}</ul>`:''}
-   </div>`:'')
-  +(kin.length?`<div class="bhead">At this table</div><div class="bonds" ${NB}>${kin.map(row).join('')}</div>`:'')
-  +(shown.length?`<div class="bhead">Everyone and everywhere else</div>
-     <div class="bonds" ${NB}>${shown.map((b,i)=>row(b,i+kin.length)).join('')}</div>`:'')
-  +(more.length?`<div class="bonds hidden" id="b-more" ${NB}>${more.map((b,i)=>row(b,i+kin.length+shown.length)).join('')}</div>
-     <button class="up wide" onclick="event.stopPropagation();this.previousElementSibling.classList.remove('hidden');this.remove()">
-       Show the other ${more.length}</button>`:'')
-  +(qs.length?`<div class="bhead">Questions with their name in them <span class="c">${qs.length}</span></div>
-     <div class="qs">${qs.slice(0,QN).map(qrow).join('')}</div>
-     ${qs.length>QN?`<div class="qs hidden" id="q-more">${qs.slice(QN).map(qrow).join('')}</div>
+ return (vis.length?`<p class="standnote">Everyone the recordings put in a scene with them, the most recent first.
+     Open one to hear the night it happened.</p>
+    <div class="bonds">${standRows(vis.slice(0,8),st.name)}</div>
+    ${vis.length>8?`<div class="bonds" id="b-more" data-i="8"></div>
+      <button class="up wide" id="b-morebtn" onclick="moreBonds(${q})">Show ten more <em>${vis.length-8} left</em></button>`:''}`:'')
+  +(qs.length?`<div class="bhead">Questions the record left open about them <span class="c">${qs.length}</span></div>
+     <div class="qs">${qs.slice(0,4).map(qrow).join('')}</div>
+     ${qs.length>4?`<div class="qs hidden" id="q-more">${qs.slice(4).map(qrow).join('')}</div>
        <button class="up wide" onclick="this.previousElementSibling.classList.remove('hidden');this.remove()">
-         Show the other ${qs.length-QN}</button>`:''}`:'')
-  +(own?`<div class="bhead">Added by the table <span class="c">${st.own.filter(canSee).length}</span></div>
-      <div class="bonds">${own}</div>`:'')
-  +(hid.length&&EDIT?`<div class="bhead">Set aside as wrong <span class="c">${hid.length}</span></div>
+         Show the other ${qs.length-4}</button>`:''}`:'')
+  +(st.own.filter(canSee).length?`<div class="bhead">Added by the table</div>
+     <div class="bonds">${st.own.filter(canSee).map(o=>`<div class="bond said2">
+       <div class="bname">${esc(o.name)}</div>
+       <div class="bnum">${esc(o.how||'')}</div>
+       <div class="btags"><span class="tagp">Not played yet</span>${o.vis==='mine'?'<span class="tagm">Just yours</span>':''}
+         ${EDIT?`<button class="pen warn" onclick="rmTie(${q},'${o.id}')">Remove</button>`:''}</div>
+      </div>`).join('')}</div>`:'')
+  +(hid.length&&EDIT?`<div class="bhead">Taken off <span class="c">${hid.length}</span></div>
       <div class="bonds">${hid.map(b=>`<div class="bond off"><div class="bname">${esc(b.name)}</div>
-        <div class="bnum">${b.n} moments</div><div class="bspk"></div>
-        <div class="btags"><button class="pen" onclick="unhideTie(${q},${JSON.stringify(b.key).replace(/"/g,'&quot;')})">Put it back</button></div></div>`).join('')}</div>`:'')
+        <div class="bnum"><button class="pen" onclick="unhideTie(${q},${JSON.stringify(b.key).replace(/"/g,'&quot;')})">Put it back</button></div></div>`).join('')}</div>`:'')
   +(EDIT?`<div class="uploads"><button class="up" onclick="addTie(${q})">The record missed someone</button>
       <span class="uphint">Anything added by hand is marked as not having happened yet — it never gets dressed up as something the recordings said.</span></div>`:'');
 }
-/* A found tie that is wrong is a correction, not an argument: it stops being
-   shown, and the recording it came from is not touched. Anyone can put it
-   back, and nothing in the log is ever removed to do either. */
+/* A tie the record found but the table knows is wrong is a correction, not an
+   argument: it stops being shown, and the recording it came from is not
+   touched. Anyone can put it back, and nothing in the log is ever removed to
+   do either. */
 function hideTie(name,key){ pushEdit('pc_tie',{op:'hide',name,key,who:whoAmI()}); openE(name); }
 function unhideTie(name,key){ pushEdit('pc_tie',{op:'unhide',name,key,who:whoAmI()}); openE(name); }
 function rmTie(name,id){ pushEdit('pc_tie',{op:'rm',name,id}); openE(name); }
@@ -1824,7 +1754,7 @@ async function addTie(name){
  const near=Object.values(T.ix).filter(e=>e.name.toLowerCase()!==String(name).toLowerCase())
    .sort((a,b)=>b.hits.length-a.hits.length).slice(0,10).map(e=>e.name);
  const a=await sheet({title:'Somebody the recordings missed.',
-  hint:'A debt, a grudge, a history that happened before any of this was written down. The vault will keep it apart from what it found on its own, and mark it as not having happened yet.',
+  hint:'A debt, a grudge, a history that happened before any of this was written down. The vault keeps it apart from what it found on its own, and marks it as not having happened yet.',
   label:'Who, or what',ph:'A name',picks:near,
   pickhint:'The names the record leans on most — tap one, or write anybody.',
   label2:'And what stands between them (you can leave this blank)',
@@ -1835,48 +1765,50 @@ async function addTie(name){
                     vis:a.vis,who:whoAmI()});
  openE(name);
 }
+function bondTap(el){
+ const was=el.classList.contains('open');
+ el.parentElement.querySelectorAll('.bond.open').forEach(x=>x.classList.remove('open'));
+ if(!was) el.classList.add('open');
+}
 function qrow(t){
  return `<div class="li ${t.resolved?'done':''}" onclick="jump(${t.si},${t.t==null?'null':t.t})">
-   <span class="dot ${t.u}"></span><p>${esc(t.q)}<span class="src">From <b>Session ${t.sn}</b>${t.resolved?' · answered':''}</span></p>
+   <span class="dot ${t.u}"></span><p>${esc(t.q)}<span class="src">From <b>Session ${t.sn}</b>${t.resolved?' · answered':''}</span>
+   ${EDIT?qedit(t):''}</p>
    <span class="tc ${t.t==null?'none':''}">${fmt(t.t)}</span></div>`;
+}
+/* The recordings turned a lot of small talk into Open Questions. Any of them
+   can be reworded, marked answered, or put down — and putting one down never
+   removes it from the night it came from. */
+function qedit(t){
+ const a=`${t.si},${t.ti}`;
+ return `<span class="qed" onclick="event.stopPropagation()">
+   <button onclick="qWord(${a})">reword</button>
+   <button onclick="qDone(${a},${t.resolved?'false':'true'})">${t.resolved?'not answered after all':'we answered this'}</button>
+   <button class="danger" onclick="qDrop(${a},true)">not really a question</button></span>`;
+}
+function qAt(si,ti){ const s=SESSIONS[si]; return s&&(s.threads||[])[ti]?{s,t:s.threads[ti]}:null; }
+function qWord(si,ti){ const h=qAt(si,ti); if(!h)return;
+ const v=prompt('Say it the way the table would say it.',h.t.q); if(v===null)return;
+ qPush(h.s,ti,'q',v.trim()); }
+function qDone(si,ti,v){ const h=qAt(si,ti); if(!h)return; qPush(h.s,ti,'resolved',!!v); }
+function qDrop(si,ti,v){ const h=qAt(si,ti); if(!h)return;
+ if(v&&!confirm('Put this one down?\n\nIt stops being counted as an open question. The night it came from keeps it, and you can always bring it back.'))return;
+ qPush(h.s,ti,'hidden',!!v); }
+function qPush(s,ti,field,value){
+ pushEdit('session_field',{slug:s.slug,path:`threads.${ti}.${field}`,value});
+ qRepaint();
+}
+function qRepaint(){
+ TIES=null;
+ if(VIEW==='codex'){ buildThreads(); buildCodex(); }
+ else if(VIEW==='entity'&&LASTE) openE(LASTE);
+ else if(VIEW==='session') openS(CUR);
 }
 /* Run a finger or a pointer across the bonds and one night lights up in all
    of them at once — so "who was he with on the eleventh?" is a question you
    answer by moving your hand, not by reading five rows and holding numbers
    in your head. The columns line up because every row draws the same nights
    in the same order; this is only possible because of that. */
-function litNight(ev,el){
- const spk=el.querySelector('.bspk'); if(!spk) return;
- const r=spk.getBoundingClientRect(); if(!r.width) return;
- const T=tieIndex(), N=T.nights.length;
- const i=Math.max(0,Math.min(N-1,Math.floor((ev.clientX-r.left)/r.width*N)));
- const n=T.nights[i];
- if(ev.pointerType==='touch'||!matchMedia('(hover:hover)').matches) return;
- if(el.dataset.lit===String(n)) return;
- /* every group on the page, not just the one under the hand — the answer to
-    "who was he with that night" is worth nothing if half of it is off-screen
-    logic */
- const host=el.closest('#e-body')||document;
- host.querySelectorAll('.bonds').forEach(g=>{
-  g.dataset.lit=n;
-  g.querySelectorAll('.spk rect.lit').forEach(x=>x.classList.remove('lit'));
-  g.querySelectorAll('.spk rect[data-n="'+n+'"]').forEach(x=>x.classList.add('lit'));
- });
- let tag=el.querySelector('.scrubtag');
- if(!tag){ tag=document.createElement('div'); tag.className='scrubtag'; el.appendChild(tag); }
- tag.textContent='Session '+n;
- tag.style.left=(r.left-el.getBoundingClientRect().left+r.width*((i+.5)/N))+'px';
-}
-function unlitNight(el){
- const host=el.closest('#e-body')||document;
- host.querySelectorAll('.bonds').forEach(g=>{ delete g.dataset.lit;
-  g.querySelectorAll('.spk rect.lit').forEach(x=>x.classList.remove('lit')); });
- host.querySelectorAll('.scrubtag').forEach(t=>t.remove()); }
-function bondTap(el){
- const was=el.classList.contains('open');
- el.parentElement.querySelectorAll('.bond.open').forEach(x=>x.classList.remove('open'));
- if(!was) el.classList.add('open');
-}
 
 /* ═══════ THE SHEET ═══════
    Every question a player is asked while building a character comes through
@@ -2201,7 +2133,9 @@ addEventListener('pointerdown',e=>{
  if(!t||!t.closest('.strip')) mkHide();
  if(!t||!t.closest('.shape')) shHide();
 });
+let LASTE=null;
 function openE(name,focusN){
+ LASTE=name;
  const ix=codexIndex();
  let e=ix[String(name).toLowerCase()];
  /* Somebody who joined tonight is in nobody's recording yet. They still get
@@ -2310,16 +2244,16 @@ function openE(name,focusN){
 
  $('e-body').innerHTML=
    stripFor(chapters)
-  +esec('stand','Where they stand',null,standBlock(standingOf(e.name)),true,
-        '<span class="fromrec">found in the record</span>')
   +esec('arc','Their arc',chapters.length,arc?`<div class="arc">${arc}</div>
      <div class="arcfoot">Tap any session to open what was said that night.</div>`
-     :(pc?`<div class="prevnone">Nothing recorded yet. The first night they play, their arc starts writing itself here.</div>`:''),true)
-  +esec('kit','What they carry',K.length||null,kit,true)
-  +esec('said2','What they say about themselves',null,said2,true)
+     :(pc?`<div class="prevnone">Nothing recorded yet. The first night they play, their arc starts writing itself here.</div>`:''),false)
+  +esec('kit','What they carry',K.length||null,kit,false)
+  +esec('said2','Where they come from',null,said2,false)
   +esec('music','Their music',null,music,false)
   +esec('said','Everything said about them',seen.size,said,false)
-  +esec('known','What the table knows',null,known,false);
+  +esec('known','What the table knows',null,known,false)
+  +esec('stand','In scenes with',null,standBlock(standingOf(e.name)),false,
+        '<span class="fromrec">found in the record</span>');
  go('entity');
  if(focusN!=null){
   const row=[...$('e-body').querySelectorAll('.arcrow')][chapters.findIndex(c=>c.s.n===focusN)];
@@ -2651,9 +2585,13 @@ function buildThreads(){
  const U=[['hi','High urgency'],['md','Medium'],['lo','Low']];
  $('t-body').innerHTML=U.map(([u,label])=>{
   let rows='';
-  SESSIONS.forEach(s=>s.threads.filter(t=>t.u===u).forEach(t=>{
-   rows+=`<div class="li ${t.resolved?'done':''}" onclick="jump(${SESSIONS.indexOf(s)},${t.t==null?'null':t.t})">
-    <span class="dot ${u}"></span><p>${esc(t.q)}<span class="src">From <b>Session ${s.n}</b> — ${esc(s.subtitle||s.title)}${t.resolved?' · resolved':''}</span></p>
+  SESSIONS.forEach(s=>s.threads.forEach((t,ti)=>{
+   if(t.u!==u||(t.hidden&&!EDIT)) return;
+   const si=SESSIONS.indexOf(s);
+   rows+=`<div class="li ${t.resolved?'done':''} ${t.hidden?'put':''}" onclick="jump(${si},${t.t==null?'null':t.t})">
+    <span class="dot ${u}"></span><p>${esc(t.q)}<span class="src">From <b>Session ${s.n}</b> — ${esc(s.subtitle||s.title)}${t.resolved?' · answered':''}${t.hidden?' · put down':''}</span>
+    ${EDIT?(t.hidden?`<span class="qed" onclick="event.stopPropagation()"><button onclick="qDrop(${si},${ti},false)">bring it back</button></span>`
+                    :qedit({si,ti,resolved:t.resolved})):''}</p>
     <span class="tc ${t.t==null?'none':''}">${fmt(t.t)}</span></div>`;
   }));
   return rows?`<div class="sechead"><h2>${label}</h2></div>`+rows:'';
@@ -2981,7 +2919,8 @@ const ATMOS={home:ATMOS_ART.home,session:ATMOS_ART.session,codex:ATMOS_ART.codex
 const ATMOS_OP={home:.38,session:.26,codex:.28,entity:.22,score:.30,party:.28,search:.26};
 function setAtmos(v){
  const el=$('atmos'); const img=ATMOS[v];
- if(!img||CAMPAIGN.atmosOff){ el.classList.remove('on'); return; }
+ if(!img||CAMPAIGN.atmosOff||(v==='entity'&&document.body.classList.contains('haspc'))){
+  el.classList.remove('on'); return; }
  el.style.setProperty('--atmos-op',ATMOS_OP[v]??.26);
  el.style.backgroundImage=`url('${img}')`;
  el.classList.add('on');
@@ -3135,7 +3074,11 @@ function whoQuietly(){ try{ return localStorage.getItem('dwk-who')||''; }catch(e
 function canSee(o){ if(!o||o.vis!=='mine') return true;
  const me=whoQuietly();                    /* never asks — reading a page must not interrogate you */
  return !!me && String(o.who||'')===me; }
-const SAYS=[['from','Where I am from'],['want','What I want'],['heard','Who I have heard of']];
+/* "What I want" and "who have I heard of" were cut on purpose. One of them
+   spoils what the table is supposed to find out at the table; the other
+   invents a history the campaign never had. Where somebody comes from is
+   background a new player genuinely needs, so that one stays. */
+const SAYS=[['from','Where they come from']];
 function applyEdit(ev){
  const p=ev.payload||{};
  switch(ev.kind){
@@ -3149,6 +3092,11 @@ function applyEdit(ev){
    if(p.op==='kind')   CODEX.kinds[String(p.key||'').trim()]=p.value;
    const K=String(p.key||'').trim(), V=typeof p.value==='string'?p.value.trim():p.value;
    if(p.op==='rename') CODEX.renames[K]=V;
+   if(p.op==='split'){ CODEX.splits=CODEX.splits||{};
+    const names=(Array.isArray(p.value)?p.value:String(p.value).split('|'))
+      .map(x=>String(x).trim()).filter(Boolean);
+    if(names.length>1) CODEX.splits[K]=names; else delete CODEX.splits[K]; }
+   if(p.op==='unsplit'){ CODEX.splits=CODEX.splits||{}; delete CODEX.splits[K]; }
    if(p.op==='merge')  CODEX.merges[K]=V;
    if(p.op==='hide'&&!CODEX.hidden.includes(String(p.key||'').trim())) CODEX.hidden.push(String(p.key||'').trim());
    if(p.op==='unhide') CODEX.hidden=CODEX.hidden.filter(k=>k!==p.key);
