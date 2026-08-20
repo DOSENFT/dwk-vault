@@ -468,6 +468,93 @@ body.haspc #e-name{text-shadow:0 2px 30px rgba(18,16,14,.9)}
 .shbtn button[disabled]{opacity:.35;cursor:default;border-color:var(--rule);color:var(--parch-f)}
 .shbtn button[disabled]:hover{border-color:var(--rule);color:var(--parch-f);background:transparent}
 .shpick{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+
+/* ── where they stand ────────────────────────────────────────────────────
+   Fact gets a different temperature from invention. Everything read out of
+   the recordings is keyed to moss and states itself flatly; everything a
+   player made up is keyed to gold and carries a mark. A reader should be
+   able to tell which is which from across the room, without reading a word.
+   The bond rows borrow the strip's grammar deliberately — the vault already
+   taught this page that height means "more happened", and it should not have
+   to teach it twice. */
+.esec .fromrec{font-family:var(--mono);font-size:8px;letter-spacing:.2em;text-transform:uppercase;
+ color:var(--moss);border:1px solid rgba(107,143,107,.36);background:rgba(107,143,107,.05);
+ padding:3px 7px;border-radius:2px;margin-left:10px;white-space:nowrap}
+.rdg{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+ padding:26px 0 24px;margin:2px 0 30px}
+.rdg h3{font-family:var(--disp);font-weight:400;font-size:27px;line-height:1.2;
+ letter-spacing:-.021em;margin:0;max-width:22ch;color:var(--parch)}
+.rdg p{font-size:15px;line-height:1.55;color:var(--parch-d);margin:12px 0 0;max-width:46ch}
+.rdgalso{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:11px}
+.rdgalso li{position:relative;padding-left:16px;font-size:14.5px;line-height:1.5;color:var(--parch-d)}
+.rdgalso li::before{content:'';position:absolute;left:0;top:8px;width:5px;height:5px;
+ border-radius:50%;background:var(--moss);opacity:.7}
+.rdgalso li span{display:block;color:var(--parch-f);font-size:13px;margin-top:2px}
+@media(min-width:701px){.rdg h3{font-size:34px;max-width:26ch}}
+
+.bhead{font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+ color:var(--parch-f);margin:30px 0 12px;display:flex;align-items:center;gap:9px}
+.bhead .c{color:var(--rust-l)}
+.bhead::after{content:'';flex:1;height:1px;background:var(--rule)}
+.bonds{display:grid;gap:1px;background:var(--rule)}
+.bonds.hidden{display:none}
+.bond{position:relative;background:var(--pitch);padding:13px 14px 12px;cursor:pointer;
+ display:grid;grid-template-columns:1fr auto;grid-template-areas:'name car' 'num car' 'spk spk' 'rec rec';
+ align-items:center;column-gap:12px;transition:background .25s}
+.bond:hover{background:var(--panel)}
+.bond .bname{grid-area:name;font-family:var(--disp);font-size:18px;letter-spacing:-.012em;
+ line-height:1.2;color:var(--parch)}
+.bond .bname em{font-family:var(--mono);font-style:normal;font-size:8px;letter-spacing:.18em;
+ text-transform:uppercase;color:var(--parch-f);margin-left:9px;vertical-align:1px}
+.bond .bnum{grid-area:num;font-family:var(--mono);font-size:9px;letter-spacing:.13em;
+ text-transform:uppercase;color:var(--parch-f);margin-top:5px}
+.bond .bnum b{color:var(--parch-d);font-weight:400}
+.bond .bspk{grid-area:spk;margin-top:11px}
+.bond .btags{grid-area:spk;display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.bond .bcar{grid-area:car;font-size:11px;color:var(--parch-f);transition:transform .3s,color .3s}
+.bond.open .bcar{transform:rotate(180deg);color:var(--rust-l)}
+.bond.kin .bname{color:var(--parch)}
+.bond.kin{background:#15120f}
+.bond.top .bname::after{content:'closest';font-family:var(--mono);font-size:7.5px;letter-spacing:.2em;
+ text-transform:uppercase;color:var(--rust-l);margin-left:10px;vertical-align:2px}
+.bond.off{opacity:.4;cursor:default}
+.bond.said2{cursor:default}
+.spk{display:block;width:100%;height:24px;overflow:visible}
+.spk rect{fill:var(--parch-f)}
+.bond.kin .spk rect{fill:var(--rust-l)}
+.bond.top .spk rect{fill:var(--rust-l)}
+.spk .spkbase{fill:var(--rule2);opacity:.85}
+.bond .brec{grid-area:rec;max-height:0;overflow:hidden;opacity:0;
+ transition:max-height .45s cubic-bezier(.2,.9,.3,1),opacity .3s,margin .3s}
+.bond.open .brec{max-height:1400px;opacity:1;margin-top:14px}
+.brechead{font-family:var(--mono);font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;
+ color:var(--parch-f);padding:10px 0 4px;border-top:1px solid var(--rule)}
+.bfoot{display:flex;gap:9px;flex-wrap:wrap;padding-top:10px}
+.pen.warn:hover{color:#c0503b;border-color:#c0503b}
+.up.wide{width:100%;justify-content:center;text-align:center;margin-top:1px}
+.qs.hidden{display:none}
+.bonds{position:relative}
+.spk rect[data-n]{transition:opacity .14s,fill .14s}
+.bonds[data-lit] .spk rect[data-n]{opacity:.14}
+.bonds .spk rect[data-n].lit{opacity:1}
+.scrubtag{position:absolute;top:-9px;transform:translateX(-50%);pointer-events:none;
+ font-family:var(--mono);font-size:8px;letter-spacing:.18em;text-transform:uppercase;
+ color:var(--rust-l);background:var(--pitch);border:1px solid var(--rust);
+ border-radius:2px;padding:3px 7px;white-space:nowrap;z-index:4}
+.bonds[data-lit] .spk .spkbase{opacity:.85}
+.firstt{display:inline-block;font-family:var(--mono);font-size:7.5px;letter-spacing:.19em;
+ text-transform:uppercase;color:var(--moss);border:1px solid rgba(107,143,107,.4);
+ border-radius:2px;padding:2px 6px;margin-right:9px;vertical-align:2px}
+.firstt.last{color:var(--parch-f);border-color:var(--rule2)}
+.qs{display:grid}
+@media(min-width:701px){
+ .bond{grid-template-columns:minmax(150px,1fr) 210px auto;
+  grid-template-areas:'name spk num car' 'rec rec rec rec';column-gap:20px}
+ .bond{grid-template-columns:minmax(150px,1fr) 210px minmax(150px,auto) auto}
+ .bond .bnum{margin-top:0;text-align:right}
+ .bond .bspk{margin-top:0}
+ .bond .btags{grid-area:spk;margin-top:0;justify-content:center}
+}
 .shpick button{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
  background:transparent;border:1px solid var(--rule2);border-radius:2px;padding:6px 9px;
  color:var(--parch-d);cursor:pointer;transition:border-color .2s,color .2s}
@@ -1429,10 +1516,10 @@ function hideE(name){
    order it happened, and you open the night you care about. Everything else is
    folded away until asked for. Works the same for a player character, a
    villain, or a tavern nobody has thought about since session four. */
-function esec(id,title,count,body,open){
+function esec(id,title,count,body,open,tag){
  if(!body) return '';
  return `<details class="esec" ${open?'open':''}><summary>
-   <span class="caret">▾</span><h2>${esc(title)}</h2>
+   <span class="caret">▾</span><h2>${esc(title)}</h2>${tag||''}
    ${count!=null?`<span class="c">${count}</span>`:''}</summary>
    <div class="esecb">${body}</div></details>`;
 }
@@ -1441,6 +1528,356 @@ function arcToggle(el){ el.classList.toggle('open'); }
 function trim(t,n){ t=String(t||'').trim(); if(t.length<=n) return t;
  const cut=t.slice(0,n); const sp=cut.lastIndexOf(' ');
  return (sp>n*0.6?cut.slice(0,sp):cut).replace(/[\s,;:—-]+$/,'')+'…'; }
+/* ═══════ WHERE THEY STAND ═══════
+   Everything in here is read out of the sixteen recordings. Nobody chose any
+   of it and nobody can argue with it — the vault is only reporting who the
+   record put in the same breath as who. This is the half of a character page
+   that is fact; the kit and the declared lines are the half that isn't, and
+   the two are never allowed to look alike.
+
+   The work is done once, the first time anybody opens a character page, and
+   then held. It costs about fifteen milliseconds. */
+let TIES=null;
+function tieIndex(){
+ if(TIES&&TIES.n===SESSIONS.length&&TIES.stamp===CHANGES.length) return TIES;
+ const ix=codexIndex(), ents=Object.values(ix);
+ const RX=t=>String(t).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+
+ /* "Rune" and "Rune Willow" are one person written two ways, and the pair
+    count would otherwise say she is closest to herself. Fold a short entry
+    into a longer one of the same kind that simply continues it — but never
+    across a possessive, because Dion and Dion's Priest are two people. */
+ const fold={};
+ ents.forEach(a=>ents.forEach(b=>{
+  if(a===b||a.name.length>=b.name.length||a.kind!==b.kind) return;
+  if(new RegExp('^'+RX(a.name)+"(?![\\w'’])\\b",'i').test(b.name)) fold[a.name.toLowerCase()]=b.name.toLowerCase();
+ }));
+ const K=k=>fold[k]||k;
+
+ const alias=[];
+ ents.forEach(e=>{ const k=e.name.toLowerCase();
+  [e.name,...e.aliases].forEach(a=>{ a=String(a||'').trim(); if(a.length>=3) alias.push([a,K(k)]); }); });
+ const shortA=alias.filter(a=>a[0].length<6), longA=alias.filter(a=>a[0].length>=6);
+ /* a short name has to be capitalised the way the record capitalises it,
+    or every "scar" in every sentence becomes a sighting of Scar */
+ const rxS=shortA.length?new RegExp('\\b('+shortA.map(a=>RX(a[0])).join('|')+')\\b','g'):null;
+ const rxL=longA.length?new RegExp('\\b('+longA.map(a=>RX(a[0])).join('|')+')\\b','gi'):null;
+ const mapS=new Map(shortA.map(a=>[a[0],a[1]])), mapL=new Map(longA.map(a=>[a[0].toLowerCase(),a[1]]));
+ function cast(txt){
+  txt=String(txt||''); if(!txt) return [];
+  const hits=[]; let m;
+  if(rxS){ rxS.lastIndex=0; while((m=rxS.exec(txt))) hits.push([m.index,m.index+m[1].length,mapS.get(m[1])]); }
+  if(rxL){ rxL.lastIndex=0; while((m=rxL.exec(txt))) hits.push([m.index,m.index+m[1].length,mapL.get(m[1].toLowerCase())]); }
+  hits.sort((a,b)=>(b[1]-b[0])-(a[1]-a[0]));          /* longest name wins the ground */
+  const taken=[], out=new Set();
+  hits.forEach(h=>{ if(taken.some(t=>h[0]<t[1]&&h[1]>t[0])) return; taken.push(h); out.add(h[2]); });
+  return [...out];
+ }
+
+ const P=new Map();
+ const SEP=String.fromCharCode(1);
+ const pair=(a,b)=>[a,b].sort().join(SEP);
+ /* keep both ends of every bond: the first handful of times the record put
+    two names together, and the last handful. The middle is not evidence. */
+ const rec=(k,ev)=>{ const r=P.get(k)||{n:0,by:{},ev:[],tail:[]};
+  if(r.ev.length<6) r.ev.push(ev);
+  r.tail.push(ev); if(r.tail.length>6) r.tail.shift();
+  return r; };
+ SESSIONS.slice().sort((a,b)=>a.n-b.n).forEach(s=>{
+  const si=SESSIONS.indexOf(s);
+  (s.beats||[]).forEach(b=>{
+   const c=cast([b.title,b.line,...(b.facets||[]).map(f=>f.join(' '))].join(' · '));
+   for(let i=0;i<c.length;i++)for(let j=i+1;j<c.length;j++){
+    const k=pair(c[i],c[j]);
+    const r=rec(k,{sn:s.n,si,t:b.t,head:b.title,line:b.line});
+    r.n++; r.by[s.n]=(r.by[s.n]||0)+1;
+    P.set(k,r);
+   }
+  });
+  /* the record's own summary of a night names people too, and those lines
+     are the best evidence there is - they say what was actually done */
+  (s.entities||[]).forEach(e=>{
+   const me=K(String(e.name||'').toLowerCase()); if(!me) return;
+   cast(e.note).forEach(o=>{ if(o===me) return;
+    const k=pair(me,o);
+    const r=rec(k,{sn:s.n,si,t:e.t,head:'What the record says of '+(ix[me]?ix[me].name:e.name),line:e.note});
+    r.n++; r.by[s.n]=(r.by[s.n]||0)+1;
+    P.set(k,r); });
+  });
+ });
+
+ /* which of the open questions have this name in them */
+ const Q=new Map();
+ SESSIONS.forEach(s=>{ const si=SESSIONS.indexOf(s);
+  (s.threads||[]).forEach(t=>cast(t.q).forEach(k=>{
+   const a=Q.get(k)||[]; a.push({si,sn:s.n,t:t.t,q:t.q,u:t.u,resolved:!!t.resolved}); Q.set(k,a); })); });
+
+ const first=SESSIONS.reduce((a,s)=>Math.min(a,s.n),1e9);
+ const last =SESSIONS.reduce((a,s)=>Math.max(a,s.n),0);
+ TIES={n:SESSIONS.length,stamp:CHANGES.length,ix,fold,K,cast,P,Q,first,last,
+       nights:SESSIONS.map(s=>s.n).sort((a,b)=>a-b)};
+ return TIES;
+}
+
+/* ── the reading ────────────────────────────────────────────────────────
+   One true sentence about where somebody stands, chosen by which true thing
+   is the most worth saying. Every one of these is checked against the record
+   before it is written, and if none of them holds, nothing is claimed. */
+const WORD=['no','one','two','three','four','five','six','seven','eight','nine','ten',
+ 'eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen',
+ 'nineteen','twenty'];
+const num=n=>n<=20?WORD[n]:String(n);
+const Num=n=>{ const w=num(n); return w[0].toUpperCase()+w.slice(1); };
+
+function readingFor(st){
+ const T=st.T; let out=[]; const N=T.nights.length, last=T.last;
+ const vis=st.bonds.filter(b=>!b.hidden);
+ const top=vis[0];
+ if(!top) return out;
+
+ /* never apart — and only worth saying if it is theirs alone */
+ if(top.nights.length===N){
+  let others=0; T.P.forEach(v=>{ if(Object.keys(v.by).length===N) others++; });
+  out.push({tag:"never",w:100,
+   head:`${Num(N)} nights, and ${top.name} in every one.`,
+   sub:others<=1?'No other pair in this campaign has never once been apart.'
+                :'The record does not have a night that separates them.'});
+ }
+
+ /* the strongest pair in the whole campaign */
+ let best=0; T.P.forEach(v=>{ if(v.n>best) best=v.n; });
+ if(top.n===best) out.push({tag:"strongest",w:92,
+  head:`Nobody in this campaign is named together more than ${st.name} and ${top.name}.`,
+  sub:`${Num(top.n)} moments across ${num(top.nights.length)} nights — the highest count the vault holds.`});
+
+ /* a bond that stopped */
+ const quiet=vis.filter(b=>b.n>=10&&last-b.last>=4&&b.nights.length>=3)
+   .sort((a,b)=>b.n-a.n)[0];
+ if(quiet) out.push({tag:"quiet",w:80,
+  head:`${st.name} and ${quiet.name} shared ${num(quiet.nights.length)} nights. The last was Session ${quiet.last}.`,
+  sub:'The record has not put them in the same moment since.'});
+
+ /* a bond that only started recently */
+ const cut=T.first+Math.floor(N*0.66);
+ const late=vis.filter(b=>b.n>=6&&b.first>=cut).sort((a,b)=>b.n-a.n)[0];
+ if(late) out.push({tag:"late",w:72,
+  head:`${late.name} is new to this story — the record only starts putting them together at Session ${late.first}.`,
+  sub:`${Num(late.n)} moments since, which is quick for ${num(last-late.first+1)} nights.`});
+
+ /* somebody the record itself has stopped seeing */
+ const meE=T.ix[st.me];
+ if(meE&&meE.hits&&meE.hits.length){
+  const own=[...new Set(meE.hits.map(h=>h.s.n))].sort((a,b)=>a-b);
+  if(last-own[own.length-1]>=3&&own.length>=2) out.push({tag:"gone",w:88,
+   head:`The record's last sighting of ${st.name} is Session ${own[own.length-1]}.`,
+   sub:`${Num(own.length)} nights before that, and nothing since.`});
+ }
+
+ /* the open questions */
+ const mine=st.threads.length;
+ if(mine>=3){
+  let total=0, beaten=0;
+  SESSIONS.forEach(x=>total+=(x.threads||[]).length);
+  T.Q.forEach((v,k)=>{ if(k!==st.me&&v.length>mine) beaten++; });
+  out.push({tag:"questions",w:beaten===0?86:52,
+   head:`${Num(mine)} of the ${total} questions still hanging over this campaign have ${st.name}'s name in them.`,
+   sub:beaten===0?'More than any other name in the vault.'
+                 :`Only ${num(beaten)} ${beaten===1?'name carries':'names carry'} more.`});
+ }
+
+ /* sheer reach */
+ if(vis.length>=25) out.push({tag:"reach",w:36,
+  head:`The record has stood ${st.name} beside ${vis.length} different names.`,
+  sub:'People, places, factions and things — everything the sixteen nights put in the same breath.'});
+
+ /* and if none of that is true, say the plain thing */
+ if(!out.length) out.push({tag:"plain",w:10,
+  head:`${st.name} is named beside ${top.name} more than anyone else.`,
+  sub:`${Num(top.n)} moments across ${num(top.nights.length)} ${top.nights.length===1?'night':'nights'}.`});
+
+ if(out.some(x=>x.tag==='gone')) out=out.filter(x=>x.tag!=='quiet');
+ return out.sort((a,b)=>b.w-a.w);
+}
+
+/* everything the record has to say about where one name stands */
+function standingOf(name){
+ const T=tieIndex(), me=T.K(String(name).toLowerCase());
+ const hidden=new Set((CODEX.tiehide||{})[me]||[]);
+ const bonds=[];
+ T.P.forEach((v,k)=>{ const parts=k.split(String.fromCharCode(1)); if(parts[0]!==me&&parts[1]!==me) return;
+  const other=parts[0]===me?parts[1]:parts[0]; if(other===me) return;
+  const e=T.ix[other]; if(!e) return;
+  const ns=Object.keys(v.by).map(Number).sort((x,y)=>x-y);
+  bonds.push({key:other,name:e.name,kind:e.kind,n:v.n,by:v.by,nights:ns,
+              first:ns[0],last:ns[ns.length-1],ev:v.ev,tail:v.tail,hidden:hidden.has(other)});
+ });
+ bonds.sort((a,b)=>b.n-a.n||a.name.localeCompare(b.name));
+ const own=((CODEX.tieadd||{})[me]||[]).slice();
+ return {me,name:(T.ix[me]||{}).name||name,bonds,own,
+         threads:(T.Q.get(me)||[]).slice(),T};
+}
+
+/* ── drawing it ─────────────────────────────────────────────────────────
+   A bond is a shape, not a number. Sixteen ticks, one per night, as tall as
+   that night was busy between the two of them — so a friendship that grew,
+   a friendship that stopped, and a friendship that was only ever one evening
+   all look like themselves at a glance, before a word is read. */
+function spark(b,peak,T){
+ /* the row is stretched to whatever width it gets, so the tick has to be a
+    small fraction of its own pitch or it arrives as a fat block */
+ const N=T.nights.length, PITCH=20, BAR=5, W=N*PITCH;
+ const bars=T.nights.map((n,i)=>{
+  const v=b.by[n]||0;
+  const h=v?3+Math.round((v/peak)*19*10)/10:1.6;
+  return `<rect data-n="${n}" x="${i*PITCH+(PITCH-BAR)/2}" y="${(22.6-h).toFixed(1)}" width="${BAR}" height="${h.toFixed(1)}" rx="2"`
+   +(v?'':' opacity=".18"')+`><title>Session ${n} — ${v?v+(v===1?' moment':' moments'):'not together'}</title></rect>`;
+ }).join('');
+ return `<svg class="spk" viewBox="0 0 ${W} 24" preserveAspectRatio="none" aria-hidden="true">
+   <rect x="0" y="22.8" width="${W}" height="0.6" class="spkbase"></rect>${bars}</svg>`;
+}
+const KTAG={pc:'',npc:'person',creature:'creature',faction:'faction',nation:'nation',
+ place:'place',item:'thing',deity:'god',asterum:'asterum'};
+
+function standBlock(st){
+ const T=st.T, q=JSON.stringify(st.name).replace(/"/g,'&quot;');
+ const vis=st.bonds.filter(b=>!b.hidden);
+ const hid=st.bonds.filter(b=>b.hidden);
+ if(!vis.length&&!st.threads.length&&!st.own.length&&!hid.length)
+  return `<div class="prevnone">The record has not met them yet. The first night they play,
+    everyone they are named beside starts appearing here on its own.</div>`;
+
+ const peak=Math.max(1,...vis.map(b=>Math.max(...Object.values(b.by))));
+ const rdg=readingFor(st);
+ const head=rdg[0], also=rdg.slice(1,3);
+
+ const row=(b,i)=>{
+  const id=`bd${i}`;
+  /* the opening of the story and its latest page, never the middle */
+  const seen=new Set(), pick=[];
+  [...b.ev.slice(0,3),...(b.tail||[]).slice(-2)].forEach(e=>{
+   const k=e.sn+'|'+e.t+'|'+e.head; if(seen.has(k)) return; seen.add(k); pick.push(e); });
+  const rec=pick.map((e,k)=>`<div class="li" onclick="event.stopPropagation();jump(${e.si},${e.t==null?'null':e.t})">
+     <span class="tc ${e.t==null?'none':''}">${fmt(e.t)}</span>
+     <p>${k===0?'<span class="firstt">the first time</span>':''}${k===pick.length-1&&pick.length>1?'<span class="firstt last">most recent</span>':''}<b style="font-weight:400">${esc(e.head)}</b> — ${esc(trim(e.line,190))}
+      <span class="src">Session <b>${e.sn}</b></span></p></div>`).join('');
+  return `<div class="bond ${b.kind==='pc'?'kin':''} ${i===0?'top':''}" onclick="bondTap(this)"
+      role="button" tabindex="0" onkeydown="if(event.key==='Enter')bondTap(this)">
+   <div class="bname">${esc(b.name)}${KTAG[b.kind]?`<em>${KTAG[b.kind]}</em>`:''}</div>
+   <div class="bnum"><b>${b.n}</b> moment${b.n===1?'':'s'} · <b>${b.nights.length}</b> night${b.nights.length===1?'':'s'}</div>
+   <div class="bspk">${spark(b,peak,T)}</div>
+   <div class="bcar" aria-hidden="true">▾</div>
+   <div class="brec">
+     <div class="brechead">Sessions ${b.first}–${b.last} · the record putting them together</div>
+     ${rec}
+     <div class="bfoot">
+       <button class="pen" onclick="event.stopPropagation();openE(${JSON.stringify(b.name).replace(/"/g,'&quot;')})">Open ${esc(b.name)}</button>
+       ${EDIT?`<button class="pen warn" onclick="event.stopPropagation();hideTie(${q},${JSON.stringify(b.key).replace(/"/g,'&quot;')})">This one is wrong</button>`:''}
+     </div>
+   </div></div>`;
+ };
+
+ const NB=`onpointermove="litNight(event,this)" onpointerleave="unlitNight(this)"`;
+ const kin=vis.filter(b=>b.kind==='pc'), rest=vis.filter(b=>b.kind!=='pc');
+ const shown=rest.slice(0,5), more=rest.slice(5);
+ const QN=5, qs=st.threads.slice().sort((a,b)=>({hi:0,md:1,lo:2}[a.u]-{hi:0,md:1,lo:2}[b.u])||a.sn-b.sn);
+
+ const own=st.own.filter(canSee).map((o,i)=>`<div class="bond said2">
+   <div class="bname">${esc(o.name)}</div>
+   <div class="bnum">${esc(o.how||'')}</div>
+   <div class="bspk"></div>
+   <div class="btags"><span class="tagp">Not played yet</span>${o.vis==='mine'?'<span class="tagm">Just yours</span>':''}${o.who?`<span class="tagl">${esc(o.who)}</span>`:''}
+     ${EDIT?`<button class="pen warn" onclick="rmTie(${q},'${o.id}')">Remove</button>`:''}</div>
+  </div>`).join('');
+
+ return (head?`<div class="rdg">
+    <h3>${esc(head.head)}</h3><p>${esc(head.sub)}</p>
+    ${also.length?`<ul class="rdgalso">${also.map(a=>`<li>${esc(a.head)} <span>${esc(a.sub)}</span></li>`).join('')}</ul>`:''}
+   </div>`:'')
+  +(kin.length?`<div class="bhead">At this table</div><div class="bonds" ${NB}>${kin.map(row).join('')}</div>`:'')
+  +(shown.length?`<div class="bhead">Everyone and everywhere else</div>
+     <div class="bonds" ${NB}>${shown.map((b,i)=>row(b,i+kin.length)).join('')}</div>`:'')
+  +(more.length?`<div class="bonds hidden" id="b-more" ${NB}>${more.map((b,i)=>row(b,i+kin.length+shown.length)).join('')}</div>
+     <button class="up wide" onclick="event.stopPropagation();this.previousElementSibling.classList.remove('hidden');this.remove()">
+       Show the other ${more.length}</button>`:'')
+  +(qs.length?`<div class="bhead">Questions with their name in them <span class="c">${qs.length}</span></div>
+     <div class="qs">${qs.slice(0,QN).map(qrow).join('')}</div>
+     ${qs.length>QN?`<div class="qs hidden" id="q-more">${qs.slice(QN).map(qrow).join('')}</div>
+       <button class="up wide" onclick="this.previousElementSibling.classList.remove('hidden');this.remove()">
+         Show the other ${qs.length-QN}</button>`:''}`:'')
+  +(own?`<div class="bhead">Added by the table <span class="c">${st.own.filter(canSee).length}</span></div>
+      <div class="bonds">${own}</div>`:'')
+  +(hid.length&&EDIT?`<div class="bhead">Set aside as wrong <span class="c">${hid.length}</span></div>
+      <div class="bonds">${hid.map(b=>`<div class="bond off"><div class="bname">${esc(b.name)}</div>
+        <div class="bnum">${b.n} moments</div><div class="bspk"></div>
+        <div class="btags"><button class="pen" onclick="unhideTie(${q},${JSON.stringify(b.key).replace(/"/g,'&quot;')})">Put it back</button></div></div>`).join('')}</div>`:'')
+  +(EDIT?`<div class="uploads"><button class="up" onclick="addTie(${q})">The record missed someone</button>
+      <span class="uphint">Anything added by hand is marked as not having happened yet — it never gets dressed up as something the recordings said.</span></div>`:'');
+}
+/* A found tie that is wrong is a correction, not an argument: it stops being
+   shown, and the recording it came from is not touched. Anyone can put it
+   back, and nothing in the log is ever removed to do either. */
+function hideTie(name,key){ pushEdit('pc_tie',{op:'hide',name,key,who:whoAmI()}); openE(name); }
+function unhideTie(name,key){ pushEdit('pc_tie',{op:'unhide',name,key,who:whoAmI()}); openE(name); }
+function rmTie(name,id){ pushEdit('pc_tie',{op:'rm',name,id}); openE(name); }
+async function addTie(name){
+ const T=tieIndex();
+ const near=Object.values(T.ix).filter(e=>e.name.toLowerCase()!==String(name).toLowerCase())
+   .sort((a,b)=>b.hits.length-a.hits.length).slice(0,10).map(e=>e.name);
+ const a=await sheet({title:'Somebody the recordings missed.',
+  hint:'A debt, a grudge, a history that happened before any of this was written down. The vault will keep it apart from what it found on its own, and mark it as not having happened yet.',
+  label:'Who, or what',ph:'A name',picks:near,
+  pickhint:'The names the record leans on most — tap one, or write anybody.',
+  label2:'And what stands between them (you can leave this blank)',
+  ph2:'Owes them a debt they have never mentioned.',
+  sub:'"Just me for now" hides it from everyone else’s screen. It still travels through the shared vault — this is a curtain, not a lock.'});
+ if(!a) return;
+ pushEdit('pc_tie',{op:'add',name,id:kid(),tie:a.text.slice(0,80),how:a.note.slice(0,200),
+                    vis:a.vis,who:whoAmI()});
+ openE(name);
+}
+function qrow(t){
+ return `<div class="li ${t.resolved?'done':''}" onclick="jump(${t.si},${t.t==null?'null':t.t})">
+   <span class="dot ${t.u}"></span><p>${esc(t.q)}<span class="src">From <b>Session ${t.sn}</b>${t.resolved?' · answered':''}</span></p>
+   <span class="tc ${t.t==null?'none':''}">${fmt(t.t)}</span></div>`;
+}
+/* Run a finger or a pointer across the bonds and one night lights up in all
+   of them at once — so "who was he with on the eleventh?" is a question you
+   answer by moving your hand, not by reading five rows and holding numbers
+   in your head. The columns line up because every row draws the same nights
+   in the same order; this is only possible because of that. */
+function litNight(ev,el){
+ const spk=el.querySelector('.bspk'); if(!spk) return;
+ const r=spk.getBoundingClientRect(); if(!r.width) return;
+ const T=tieIndex(), N=T.nights.length;
+ const i=Math.max(0,Math.min(N-1,Math.floor((ev.clientX-r.left)/r.width*N)));
+ const n=T.nights[i];
+ if(ev.pointerType==='touch'||!matchMedia('(hover:hover)').matches) return;
+ if(el.dataset.lit===String(n)) return;
+ /* every group on the page, not just the one under the hand — the answer to
+    "who was he with that night" is worth nothing if half of it is off-screen
+    logic */
+ const host=el.closest('#e-body')||document;
+ host.querySelectorAll('.bonds').forEach(g=>{
+  g.dataset.lit=n;
+  g.querySelectorAll('.spk rect.lit').forEach(x=>x.classList.remove('lit'));
+  g.querySelectorAll('.spk rect[data-n="'+n+'"]').forEach(x=>x.classList.add('lit'));
+ });
+ let tag=el.querySelector('.scrubtag');
+ if(!tag){ tag=document.createElement('div'); tag.className='scrubtag'; el.appendChild(tag); }
+ tag.textContent='Session '+n;
+ tag.style.left=(r.left-el.getBoundingClientRect().left+r.width*((i+.5)/N))+'px';
+}
+function unlitNight(el){
+ const host=el.closest('#e-body')||document;
+ host.querySelectorAll('.bonds').forEach(g=>{ delete g.dataset.lit;
+  g.querySelectorAll('.spk rect.lit').forEach(x=>x.classList.remove('lit')); });
+ host.querySelectorAll('.scrubtag').forEach(t=>t.remove()); }
+function bondTap(el){
+ const was=el.classList.contains('open');
+ el.parentElement.querySelectorAll('.bond.open').forEach(x=>x.classList.remove('open'));
+ if(!was) el.classList.add('open');
+}
+
 /* ═══════ THE SHEET ═══════
    Every question a player is asked while building a character comes through
    here, so the order is the same every time: who is this for, then what is
@@ -1873,6 +2310,8 @@ function openE(name,focusN){
 
  $('e-body').innerHTML=
    stripFor(chapters)
+  +esec('stand','Where they stand',null,standBlock(standingOf(e.name)),true,
+        '<span class="fromrec">found in the record</span>')
   +esec('arc','Their arc',chapters.length,arc?`<div class="arc">${arc}</div>
      <div class="arcfoot">Tap any session to open what was said that night.</div>`
      :(pc?`<div class="prevnone">Nothing recorded yet. The first night they play, their arc starts writing itself here.</div>`:''),true)
@@ -2743,6 +3182,22 @@ function applyEdit(ev){
    if(p.op==='field'){
     const r=R.find(x=>x.name.toLowerCase()===String(p.name).toLowerCase()); if(!r) break;
     r[p.field]=p.value; break; }
+   break; }
+  /* A found tie is read out of the recordings, so it is never edited — it is
+     either shown or set aside, and either way the recording is untouched.
+     A tie somebody adds by hand is stored separately and always marked. */
+  case 'pc_tie':{
+   const k=String(p.name||'').toLowerCase();
+   if(p.op==='hide'||p.op==='unhide'){
+    CODEX.tiehide=CODEX.tiehide||{};
+    const a=CODEX.tiehide[k]=CODEX.tiehide[k]||[];
+    if(p.op==='hide'){ if(!a.includes(p.key)) a.push(p.key); }
+    else CODEX.tiehide[k]=a.filter(x=>x!==p.key);
+    break; }
+   CODEX.tieadd=CODEX.tieadd||{};
+   const L=CODEX.tieadd[k]=CODEX.tieadd[k]||[];
+   if(p.op==='add') L.push({id:p.id,name:p.tie,how:p.how||'',vis:p.vis||'all',who:p.who||''});
+   if(p.op==='rm'){ const i=L.findIndex(x=>x.id===p.id); if(i>-1) L.splice(i,1); }
    break; }
   case 'pc_kit':{
    if(p.op==='say'){
